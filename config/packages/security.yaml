@@ -18,9 +18,9 @@ security:
             provider: app_user_provider
             custom_authenticator: App\Security\LoginFormAuthenticator
             logout:
-                path: app_logout
+                path: logout
                 # where to redirect after logout
-                # target: app_any_route
+                target: login
 
             remember_me:
                 secret: '%kernel.secret%'
@@ -41,6 +41,7 @@ security:
          - { path: ^/club, roles: ROLE_USER }
          - { path: ^/review, roles: ROLE_USER }
          - { path: ^/book, roles: ROLE_USER }
+         - { path: ^/home, roles: ROLE_USER }
 
 when@test:
     security:
