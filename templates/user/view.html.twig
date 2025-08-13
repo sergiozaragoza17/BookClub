@@ -13,13 +13,15 @@
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Name:</strong> {{ user.name ?? 'Not set' }}</p>
     <p><strong>Bio:</strong> {{ user.bio ?? 'Not set' }}</p>
-{#    {% set favGenre = [] %}#}
-{#    {% for genres in user.favGenres %}#}
-{#        {% set favGenre[] %}#}
+    <p><strong>Fav. Book:</strong> {{ user.favBook ?? 'Not set' }}</p>
+    <p><strong>Currently Reading:</strong> {{ user.currentlyReading ?? 'Not set' }}</p>
     <p><strong>Fav. Genres:</strong>  {{ user.favGenres|join(', ') }} </p>
-{#    {% endfor %}#}
+    <p><strong>Joined at:</strong>  {{ user.joinedAt|date }} </p>
+    <p><strong>Total Reviews Written</strong>  0 </p>
+
 
     <a href="{{ path('profile_edit') }}" class="btn btn-primary">Edit Profile</a>
+    <a href="{{ path('profile_change_password') }}" class="btn btn-primary">Change Password</a>
 
     <form action="{{ path('profile_delete') }}" method="post" style="display:inline;">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
