@@ -22,8 +22,12 @@ class UserController extends AbstractController
     #[Route('', name: 'profile')]
     public function viewProfile(): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         return $this->render('user/view.html.twig', [
-            'user' => $this->getUser(),
+            'user' => $user,
+            'totalReviews' => $user->getTotalReviews(),
         ]);
     }
 
@@ -41,9 +45,6 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $currentPassword = $form->get('currentPassword')->getData();
-            $newPassword = $form->get('plainPassword')->getData();
-            $confirmPassword = $form->get('confirmPassword')->getData();
 
             /** @var UploadedFile $file */
             $file = $form->get('profileImage')->getData();
@@ -51,23 +52,6 @@ class UserController extends AbstractController
                 $url = $uploader->upload($file, 'profiles/');
                 $user->setProfileImage($url);
             }
-
-//            // Si intenta cambiar contraseña
-//            if ($newPassword || $confirmPassword) {
-//                if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
-//                    $this->addFlash('error', 'Current password is incorrect.');
-//                    return $this->redirectToRoute('profile_edit');
-//                }
-//
-//                if ($newPassword !== $confirmPassword) {
-//                    $this->addFlash('error', 'New passwords do not match.');
-//                    return $this->redirectToRoute('profile_edit');
-//                }
-//
-//                $user->setPassword(
-//                    $passwordHasher->hashPassword($user, $newPassword)
-//                );
-//            }
 
             $entityManager->flush();
             $this->addFlash('success', 'Profile updated successfully.');

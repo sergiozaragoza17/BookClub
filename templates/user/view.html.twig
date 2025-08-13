@@ -17,7 +17,7 @@
     <p><strong>Currently Reading:</strong> {{ user.currentlyReading ?? 'Not set' }}</p>
     <p><strong>Fav. Genres:</strong>  {{ user.favGenres|join(', ') }} </p>
     <p><strong>Joined at:</strong>  {{ user.joinedAt|date }} </p>
-    <p><strong>Total Reviews Written</strong>  0 </p>
+    <p><strong>Total Reviews Written</strong>  {{ totalReviews }} </p>
 
 
     <a href="{{ path('profile_edit') }}" class="btn btn-primary">Edit Profile</a>

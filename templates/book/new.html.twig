@@ -4,8 +4,17 @@
 
 {% block body %}
     <h1>Create new Book</h1>
+    {{ form_start(form) }}
+    {{ form_row(form.coverImage) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.author) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.publishedYear) }}
+    <hr>
 
-    {{ include('book/_form.html.twig') }}
+    <button class="btn btn-success mt-3">Save changes</button>
+    {{ form_end(form) }}
+{#    {{ include('book/_form.html.twig') }}#}
 
     <a href="{{ path('book_index') }}">back to list</a>
 {% endblock %}

@@ -13,7 +13,6 @@
                 <th>Author</th>
                 <th>PublishedYear</th>
                 <th>Description</th>
-                <th>Slug</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -25,7 +24,6 @@
                 <td>{{ book.author }}</td>
                 <td>{{ book.publishedYear }}</td>
                 <td>{{ book.description }}</td>
-                <td>{{ book.slug }}</td>
                 <td>
                     <a href="{{ path('book_show', {'id': book.id}) }}">show</a>
                     <a href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
