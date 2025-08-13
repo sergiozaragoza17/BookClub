@@ -41,7 +41,10 @@ security:
          - { path: ^/club, roles: ROLE_USER }
          - { path: ^/review, roles: ROLE_USER }
          - { path: ^/book, roles: ROLE_USER }
-         - { path: ^/home, roles: ROLE_USER }
+         - { path: ^/login, roles: PUBLIC_ACCESS }
+         - { path: ^/register, roles: PUBLIC_ACCESS }
+         - { path: ^/verify, roles: PUBLIC_ACCESS }
+         - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:

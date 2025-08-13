@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block body %}
+    <h1>My Profile</h1>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Name:</strong> {{ user.name ?? 'Not set' }}</p>
+
+    <a href="{{ path('profile_edit') }}" class="btn btn-primary">Edit Profile</a>
+
+    <form action="{{ path('profile_delete') }}" method="post" style="display:inline;">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+        <button class="btn btn-danger" type="submit">Delete Account</button>
+    </form>
+{% endblock %}
