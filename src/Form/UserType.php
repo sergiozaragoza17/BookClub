@@ -28,6 +28,14 @@ class UserType extends AbstractType
                 'label' => 'Bio',
                 'required' => false,
             ])
+            ->add('favBook', TextType::class, [
+                'required' => false,
+                'label' => 'Favorite Book'
+            ])
+            ->add('currentlyReading', TextType::class, [
+                'required' => false,
+                'label' => 'Currently Reading'
+            ])
             ->add('favGenres', ChoiceType::class, [
                 'label' => 'Favorite Genres',
                 'choices' => [
@@ -55,21 +63,6 @@ class UserType extends AbstractType
                         'mimeTypesMessage' => 'Please upload a valid image (JPEG or PNG)',
                     ])
                 ],
-            ])
-            ->add('currentPassword', PasswordType::class, [
-                'mapped' => false,
-                'required' => false,
-                'label' => 'Current Password',
-            ])
-            ->add('plainPassword', PasswordType::class, [
-                'mapped' => false,
-                'required' => false,
-                'label' => 'New Password',
-            ])
-            ->add('confirmPassword', PasswordType::class, [
-                'mapped' => false,
-                'required' => false,
-                'label' => 'Confirm New Password',
             ]);
     }
 

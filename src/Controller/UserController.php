@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\ChangePasswordType;
 use App\Form\UserType;
 use App\Service\S3Uploader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,22 +52,22 @@ class UserController extends AbstractController
                 $user->setProfileImage($url);
             }
 
-            // Si intenta cambiar contraseña
-            if ($newPassword || $confirmPassword) {
-                if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
-                    $this->addFlash('error', 'Current password is incorrect.');
-                    return $this->redirectToRoute('profile_edit');
-                }
-
-                if ($newPassword !== $confirmPassword) {
-                    $this->addFlash('error', 'New passwords do not match.');
-                    return $this->redirectToRoute('profile_edit');
-                }
-
-                $user->setPassword(
-                    $passwordHasher->hashPassword($user, $newPassword)
-                );
-            }
+//            // Si intenta cambiar contraseña
+//            if ($newPassword || $confirmPassword) {
+//                if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
+//                    $this->addFlash('error', 'Current password is incorrect.');
+//                    return $this->redirectToRoute('profile_edit');
+//                }
+//
+//                if ($newPassword !== $confirmPassword) {
+//                    $this->addFlash('error', 'New passwords do not match.');
+//                    return $this->redirectToRoute('profile_edit');
+//                }
+//
+//                $user->setPassword(
+//                    $passwordHasher->hashPassword($user, $newPassword)
+//                );
+//            }
 
             $entityManager->flush();
             $this->addFlash('success', 'Profile updated successfully.');
@@ -79,16 +80,52 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/delete', name: 'profile_delete', methods: ['POST'])]
-    public function deleteProfile(EntityManagerInterface $entityManager): Response
+    #[Route('/profile/change-password', name: 'profile_change_password')]
+    public function changePassword(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
+        /** @var User $user */
         $user = $this->getUser();
 
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $form = $this->createForm(ChangePasswordType::class);
+        $form->handleRequest($request);
 
-        $this->addFlash('success', 'Account deleted successfully.');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $currentPassword = $form->get('currentPassword')->getData();
+            $newPassword = $form->get('plainPassword')->getData();
+            $confirmPassword = $form->get('confirmPassword')->getData();
 
-        return $this->redirectToRoute('logout');
+            if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
+                $this->addFlash('error', 'Current password is incorrect.');
+                return $this->redirectToRoute('profile_change_password');
+            }
+
+            if ($newPassword !== $confirmPassword) {
+                $this->addFlash('error', 'New passwords do not match.');
+                return $this->redirectToRoute('profile_change_password');
+            }
+
+            $user->setPassword($passwordHasher->hashPassword($user, $newPassword));
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Password changed successfully.');
+            return $this->redirectToRoute('profile');
+        }
+
+        return $this->render('user/change_password.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/delete', name: 'profile_delete', methods: ['POST'])]
+    public function deleteProfile(EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $user = $this->getUser();
+        if ($this->isCsrfTokenValid('delete-profile', $request->request->get('_token'))) {
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Account deleted successfully.');
+        }
+        return $this->redirectToRoute('login');
     }
 }

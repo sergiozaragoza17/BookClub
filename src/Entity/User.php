@@ -54,6 +54,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?array $favGenres = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $favBook = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $currentlyReading = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $joinedAt = null;
+
     public function __construct()
     {
         $this->clubs = new ArrayCollection();
@@ -213,6 +222,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFavGenres(?array $favGenres): static
     {
         $this->favGenres = $favGenres;
+
+        return $this;
+    }
+
+    public function getFavBook(): ?string
+    {
+        return $this->favBook;
+    }
+
+    public function setFavBook(?string $favBook): static
+    {
+        $this->favBook = $favBook;
+
+        return $this;
+    }
+
+    public function getCurrentlyReading(): ?string
+    {
+        return $this->currentlyReading;
+    }
+
+    public function setCurrentlyReading(?string $currentlyReading): static
+    {
+        $this->currentlyReading = $currentlyReading;
+
+        return $this;
+    }
+
+    public function getJoinedAt(): ?\DateTimeImmutable
+    {
+        return $this->joinedAt;
+    }
+
+    public function setJoinedAt(\DateTimeImmutable $joinedAt): static
+    {
+        $this->joinedAt = $joinedAt;
 
         return $this;
     }
