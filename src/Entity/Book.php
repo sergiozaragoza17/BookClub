@@ -29,6 +29,9 @@ class Book
     #[ORM\Column(length: 180, unique: true)]
     private string $slug;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $coverImage = null;
+
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'book')]
     private Collection $reviews;
 
@@ -99,6 +102,17 @@ class Book
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+        return $this;
+    }
+
+    public function getCoverImage(): ?string
+    {
+        return $this->coverImage;
+    }
+
+    public function setCoverImage(?string $coverImage): self
+    {
+        $this->coverImage = $coverImage;
         return $this;
     }
 
