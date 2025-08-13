@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Service\S3Uploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -28,7 +30,8 @@ class UserController extends AbstractController
     public function editProfile(
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        S3Uploader $uploader
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
@@ -40,6 +43,13 @@ class UserController extends AbstractController
             $currentPassword = $form->get('currentPassword')->getData();
             $newPassword = $form->get('plainPassword')->getData();
             $confirmPassword = $form->get('confirmPassword')->getData();
+
+            /** @var UploadedFile $file */
+            $file = $form->get('profileImage')->getData();
+            if ($file) {
+                $url = $uploader->upload($file, 'profiles/');
+                $user->setProfileImage($url);
+            }
 
             // Si intenta cambiar contraseña
             if ($newPassword || $confirmPassword) {

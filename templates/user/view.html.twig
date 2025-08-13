@@ -4,8 +4,20 @@
 
 {% block body %}
     <h1>My Profile</h1>
+    {% if user.profileImage %}
+        <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="img-thumbnail" width="150">
+{#    {% else %}#}
+{#        <img src="/images/default-profile.png" alt="Default Profile" class="img-thumbnail" width="150">#}
+    {% endif %}
+
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Name:</strong> {{ user.name ?? 'Not set' }}</p>
+    <p><strong>Bio:</strong> {{ user.bio ?? 'Not set' }}</p>
+{#    {% set favGenre = [] %}#}
+{#    {% for genres in user.favGenres %}#}
+{#        {% set favGenre[] %}#}
+    <p><strong>Fav. Genres:</strong>  {{ user.favGenres|join(', ') }} </p>
+{#    {% endfor %}#}
 
     <a href="{{ path('profile_edit') }}" class="btn btn-primary">Edit Profile</a>
 

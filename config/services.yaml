@@ -20,5 +20,12 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    App\Service\S3Uploader:
+      arguments:
+        $awsKey: '%env(AWS_ACCESS_KEY_ID)%'
+        $awsSecret: '%env(AWS_SECRET_ACCESS_KEY)%'
+        $awsRegion: '%env(AWS_DEFAULT_REGION)%'
+        $bucketName: '%env(AWS_BUCKET_NAME)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
