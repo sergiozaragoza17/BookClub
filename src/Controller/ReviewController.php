@@ -18,7 +18,7 @@ class ReviewController extends AbstractController
     public function index(ReviewRepository $reviewRepository): Response
     {
         return $this->render('review/index.html.twig', [
-            'reviews' => $reviewRepository->findAll(),
+            'reviews' => $reviewRepository->findBy(['status' => 'approved']),
         ]);
     }
 
@@ -30,9 +30,11 @@ class ReviewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $review->setStatus('pending');
             $entityManager->persist($review);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Your review has been submitted and is pending approval.');
             return $this->redirectToRoute('review_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -45,18 +47,28 @@ class ReviewController extends AbstractController
     #[Route('/{id}', name: 'review_show', methods: ['GET'])]
     public function show(Review $review): Response
     {
+        $book = $review->getBook();
         return $this->render('review/show.html.twig', [
             'review' => $review,
+            'book' => $book,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'review_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Review $review, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ReviewType::class, $review);
+        $form = $this->createForm(ReviewType::class, $review, [
+            'is_admin' => $this->isGranted('ROLE_ADMIN'),
+        ]);
+        if ($review->getStatus() === 'approved') {
+            $form->remove('status');
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (!$this->isGranted('ROLE_ADMIN')) {
+                $review->setStatus('pending');
+            }
             $entityManager->flush();
 
             return $this->redirectToRoute('review_index', [], Response::HTTP_SEE_OTHER);

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage Reviews{% endblock %}
+
+{% block body %}
+    <h1>Manage Reviews</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Book</th>
+            <th>User</th>
+            <th>Rating</th>
+            <th>Content</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for review in reviews %}
+            <tr>
+                <td>{{ review.id }}</td>
+                <td>{{ review.book.title }}</td>
+                <td>{{ review.user.name }}</td>
+                <td>{{ review.rating }}</td>
+                <td>{{ review.content|slice(0, 50) ~ '...' }}</td>
+                <td>{{ review.status }}</td>
+                <td>
+                    <a href="{{ path('admin_review_show', {id: review.id}) }}">View</a>
+
+                    {% if review.status != 'approved' %}
+                        <a href="{{ path('admin_review_approve', {id: review.id}) }}">Approve</a>
+                        <a href="{{ path('admin_review_reject', {id: review.id}) }}">Reject</a>
+                    {% endif %}
+                    <a href="{{ path('admin_review_edit', {id: review.id}) }}">Edit</a>
+                    <form method="post" action="{{ path('admin_review_delete', {id: review.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
+                        <button>Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">No reviews found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -266,4 +266,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->reviews->count();
     }
+
+    public function __toString(): string
+    {
+        return $this->name;
+    }
 }
