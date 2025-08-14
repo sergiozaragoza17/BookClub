@@ -32,6 +32,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('club_index') }}">Clubs</a>
                         </li>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li><a class="nav-link" href="{{ path('admin_users') }}">Users</a></li>
+                                <li><a class="nav-link" href="{{ path('admin_reviews') }}">Reviews</a></li>
+                            {% endif %}
 
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('profile') }}">Profile</a>

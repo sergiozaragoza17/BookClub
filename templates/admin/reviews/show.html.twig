@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Review Details{% endblock %}
+
+{% block body %}
+    <h1>Review Details</h1>
+
+    <ul>
+        <li><strong>ID:</strong> {{ review.id }}</li>
+        <li><strong>Book:</strong> {{ review.book.title }}</li>
+        <li><strong>User:</strong> {{ review.user.name }}</li>
+        <li><strong>Rating:</strong> {{ review.rating }}</li>
+        <li><strong>Content:</strong> {{ review.content }}</li>
+        <li><strong>Status:</strong> {{ review.status }}</li>
+    </ul>
+
+    <a href="{{ path('admin_review_edit', {id: review.id}) }}">Edit</a>
+    <a href="{{ path('admin_reviews') }}">Back to list</a>
+{% endblock %}

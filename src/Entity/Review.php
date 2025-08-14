@@ -19,6 +19,9 @@ class Review
     #[ORM\Column(type: 'integer')]
     private ?int $rating = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $status = 'pending';
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -51,6 +54,17 @@ class Review
     public function setRating(int $rating): static
     {
         $this->rating = $rating;
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
         return $this;
     }
 

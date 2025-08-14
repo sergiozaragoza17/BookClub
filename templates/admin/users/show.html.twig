@@ -1,0 +1,19 @@
+{% extends '../../base.html.twig' %}
+
+{% block title %}User {{ user.name }}{% endblock %}
+
+{% block body %}
+    <h1>User Details</h1>
+
+    <ul>
+        <li><strong>ID:</strong> {{ user.id }}</li>
+        <li><strong>Email:</strong> {{ user.email }}</li>
+        <li><strong>Name:</strong> {{ user.name }}</li>
+        <li><strong>Roles:</strong> {{ user.roles|join(', ') }}</li>
+        <li><strong>Joined At:</strong> {{ user.joinedAt ? user.joinedAt|date('Y-m-d') : '' }}</li>
+        <li><strong>Verified:</strong> {{ user.isVerified ? 'Yes' : 'No' }}</li>
+    </ul>
+
+    <a href="{{ path('admin_user_edit', {id: user.id}) }}">Edit</a>
+    <a href="{{ path('admin_user_index') }}">Back to list</a>
+{% endblock %}
