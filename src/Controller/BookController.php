@@ -198,7 +198,7 @@ class BookController extends AbstractController
         return $this->redirectToRoute('book_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}', name: 'book_remove', methods: ['POST'])]
+    #[Route('/{id}/remove', name: 'book_remove', methods: ['POST'])]
     public function remove(Request $request, Book $book, EntityManagerInterface $entityManager, UserBookRepository $userBookRepository): Response
     {
         $user = $this->getUser();
