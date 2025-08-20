@@ -11,8 +11,11 @@
                 <th>Id</th>
                 <th>Title</th>
                 <th>Author</th>
-                <th>PublishedYear</th>
+                <th>Published Year</th>
                 <th>Description</th>
+                {% if not is_granted('ROLE_ADMIN') %}
+                    <th>Status</th>
+                {% endif %}
                 <th>actions</th>
             </tr>
         </thead>
@@ -23,10 +26,21 @@
                 <td>{{ book.title }}</td>
                 <td>{{ book.author }}</td>
                 <td>{{ book.publishedYear }}</td>
-                <td>{{ book.description }}</td>
                 <td>
-                    <a href="{{ path('book_show', {'id': book.id}) }}">show</a>
-                    <a href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
+                    {% if book.description|length > 50 %}
+                        {{ book.description|slice(0, 50) ~ '...' }}
+                    {% else %}
+                        {{ book.description }}
+                    {% endif %}
+                </td>
+                {% for ub in book.userBooks %}
+                    {% if ub.user.id == app.user.id %}
+                        <td>{{ ub.status }}</td>
+                    {% endif %}
+                {% endfor %}
+                <td>
+                    <a class="btn btn-info" href="{{ path('book_show', {'id': book.id}) }}">show</a>
+                    <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -37,5 +51,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('book_new') }}">Create new</a>
+    <a class="btn btn-info" href="{{ path('book_new') }}">Create new</a>
 {% endblock %}

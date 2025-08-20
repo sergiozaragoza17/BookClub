@@ -27,6 +27,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
+    #[ORM\OneToMany(targetEntity: UserBook::class, mappedBy: 'user')]
+    private Collection $userBooks;
+
     /**
      * @var string The hashed password
      */
@@ -67,6 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->clubs = new ArrayCollection();
         $this->reviews = new ArrayCollection();
+        $this->userBooks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,6 +96,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->clubs->removeElement($club)) {
             $club->removeMember($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserBook[]
+     */
+    public function getUserBooks(): Collection
+    {
+        return $this->userBooks;
+    }
+
+    public function addUserBook(UserBook $userBook): self
+    {
+        $this->userBooks->removeElement($userBook);
+        return $this;
+    }
+
+    public function removeUserBook(UserBook $userBook): self
+    {
+        if ($this->userBooks->removeElement($userBook)) {
+            if ($userBook->getUser() === $this) {
+                $userBook->setUser(null);
+            }
         }
         return $this;
     }

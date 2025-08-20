@@ -5,11 +5,22 @@
 {% block body %}
     <h1>Create new Book</h1>
     {{ form_start(form) }}
+{#    {{ form_widget(form) }}#}
     {{ form_row(form.coverImage) }}
     {{ form_row(form.title) }}
     {{ form_row(form.author) }}
     {{ form_row(form.description) }}
     {{ form_row(form.publishedYear) }}
+{#    {{ form_row(form.userBook) }}#}
+    {% if not is_granted('ROLE_ADMIN') %}
+        <label>Status</label>
+        <select name="user_book_status">
+            <option value="pending">Pending</option>
+            <option value="reading">Reading</option>
+            <option value="finished">Finished</option>
+        </select>
+    {% endif %}
+
     <hr>
 
     <button class="btn btn-success mt-3">Save changes</button>
