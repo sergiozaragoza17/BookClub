@@ -26,18 +26,19 @@ class Book
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 180, unique: true)]
-    private string $slug;
-
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $coverImage = null;
 
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'book')]
     private Collection $reviews;
 
+    #[ORM\OneToMany(targetEntity: UserBook::class, mappedBy: 'book')]
+    private Collection $userBooks;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
+        $this->userBooks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -48,6 +49,29 @@ class Book
     public function getReviews(): Collection
     {
         return $this->reviews;
+    }
+
+    /**
+     * @return Collection|UserBook[]
+     */
+    public function getUserBooks(): Collection
+    {
+        return $this->userBooks;
+    }
+
+    public function addUserBook(UserBook $userBook): self
+    {
+        if (!$this->userBooks->contains($userBook)) {
+            $this->userBooks[] = $userBook;
+            $userBook->setBook($this);
+        }
+        return $this;
+    }
+
+    public function removeUserBook(UserBook $userBook): self
+    {
+        $this->userBooks->removeElement($userBook);
+        return $this;
     }
 
     public function getTitle(): string
@@ -91,17 +115,6 @@ class Book
     public function setDescription(?string $description): self
     {
         $this->description = $description;
-        return $this;
-    }
-
-    public function getSlug(): string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
         return $this;
     }
 

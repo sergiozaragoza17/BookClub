@@ -12,16 +12,16 @@
     {% endif %}
     <p><strong>Title:</strong> {{ book.title }}</p>
     <p><strong>Author:</strong> {{ book.author ?? 'Not set' }}</p>
-    <p><strong>description:</strong> {{ book.description ?? 'Not set' }}</p>
+    <p><strong>Description:</strong> {{ book.description ?? 'Not set' }}</p>
     <p><strong>Published year:</strong> {{ book.publishedYear ?? 'Not set' }}</p>
-    <p><strong>Slug:</strong> {{ book.slug ?? 'Not set' }}</p>
+    <p><strong>Status:</strong> {{ userBook.status ?? 'Not set' }}</p>
 
     <a class="btn btn-info" href="{{ path('book_index') }}">back to list</a>
 
     <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
 
-    <form method="post" action="{{ path('book_delete', {'id': book.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
-        <button class="btn btn-danger">Delete</button>
-    </form>
+{#    <form method="post" action="{{ path('book_delete', {'id': book.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">#}
+{#        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">#}
+{#        <button class="btn btn-danger">Delete</button>#}
+{#    </form>#}
 {% endblock %}

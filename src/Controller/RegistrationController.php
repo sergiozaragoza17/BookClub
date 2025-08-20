@@ -43,15 +43,16 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            if ($this->getParameter('kernel.environmet') === 'dev'){
+            if ($this->getParameter('kernel.environment') == 'dev'){
                 $user->setIsVerified(true);
+                $user->setJoinedAt(new \DateTimeImmutable());
             }
 
             $entityManager->persist($user);
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            if ($this->getParameter('kernel.environmet') !== 'dev') {
+            if ($this->getParameter('kernel.environment') !== 'dev') {
                 $this->emailVerifier->sendEmailConfirmation('verify_email', $user,
                     (new TemplatedEmail())
                         ->from(new Address('no-reply@bookclub.local', 'BookClub Mailer'))
