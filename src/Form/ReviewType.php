@@ -19,15 +19,15 @@ class ReviewType extends AbstractType
     {
         $builder
             ->add('rating', IntegerType::class, [
-                'label' => 'Puntuación',
+                'label' => 'Rating',
                 'attr' => ['min' => 1, 'max' => 5],
             ])
             ->add('content', TextareaType::class, [
-                'label' => 'Contenido',
+                'label' => 'Content',
             ]);
         if ($options['is_admin']) {
             $builder->add('status', ChoiceType::class, [
-                'label' => 'Estado',
+                'label' => 'Status',
                 'choices' => [
                     'Pending' => 'pending',
                     'Approved' => 'approved',

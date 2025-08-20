@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Review{% endblock %}
+
+{% block body %}
+    <h1>Edit Review</h1>
+    {{ form_start(form) }}
+{#    <p>User: {{ review.user.name }}</p>#}
+    <p>Book: {{ review.book.title }}</p>
+    {{ form_row(form.content) }}
+    {{ form_row(form.rating) }}
+    {#    {% if review.status != 'approved' %}#}
+    {#        {{ form_row(form.status) }}#}
+    {#    {% endif %}#}
+    {{ form_rest(form) }}
+    <button class="btn btn-success">Save changes</button>
+    {{ form_end(form, {'render_rest': false}) }}
+
+    <a href="{{ path('review_index') }}">back to list</a>
+
+{#    <form action="{{ path('review_delete', {'id': review.id}) }}" method="post" style="display:inline;">#}
+{#        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">#}
+{#        <button class="btn btn-danger" type="submit">Delete Review</button>#}
+{#    </form>#}
+{% endblock %}
