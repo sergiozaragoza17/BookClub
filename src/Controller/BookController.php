@@ -112,10 +112,13 @@ class BookController extends AbstractController
             'user' => $user,
             'book' => $book,
         ]);
+        $reviews = $book->getReviews();
 
         return $this->render('book/show.html.twig', [
             'book' => $book,
             'userBook' => $userBook,
+            'reviews' => $reviews,
+            'user' => $user,
         ]);
     }
 

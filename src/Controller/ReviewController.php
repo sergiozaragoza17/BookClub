@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Book;
 use App\Entity\Review;
 use App\Form\ReviewType;
 use App\Repository\ReviewRepository;
@@ -22,10 +23,15 @@ class ReviewController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'review_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/{book}/new', name: 'review_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, Book $book, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+
         $review = new Review();
+        $review->setBook($book);
+        $review->setUser($user);
+
         $form = $this->createForm(ReviewType::class, $review);
         $form->handleRequest($request);
 
@@ -35,12 +41,13 @@ class ReviewController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Your review has been submitted and is pending approval.');
-            return $this->redirectToRoute('review_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
         }
 
         return $this->renderForm('review/new.html.twig', [
             'review' => $review,
             'form' => $form,
+            'book' => $book,
         ]);
     }
 
