@@ -87,11 +87,29 @@
             <p><b>No reviews yet ...</b></p>
         {% endif %}
     </div>
-    <div class="container " style="margin-top: 1%;margin-bottom: 1%;">
+    <div class="container mt-3 mb-3">
         <a class="btn btn-info" href="{{ path('book_index') }}">Back to list</a>
-
         <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">Edit</a>
-        <a class="btn btn-info" href="{{ path('review_new', {'book': book.id}) }}">Write a review</a>
+
+        {% if userBook is null %}
+            <div class="d-inline-block" data-bs-toggle="tooltip" title="Add the book to your library first">
+                <button class="btn btn-secondary" disabled>
+                    Write a review
+                </button>
+            </div>
+
+        {% elseif userBook.status != 'finished' %}
+            <div class="d-inline-block" data-bs-toggle="tooltip" title="Mark the book as finished to review">
+                <button class="btn btn-secondary" disabled>
+                    Write a review
+                </button>
+            </div>
+
+        {% else %}
+            <a class="btn btn-info" href="{{ path('review_new', {'book': book.id}) }}">
+                Write a review
+            </a>
+        {% endif %}
     </div>
 
 
