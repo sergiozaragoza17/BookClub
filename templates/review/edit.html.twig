@@ -5,21 +5,67 @@
 {% block body %}
     <h1>Edit Review</h1>
     {{ form_start(form) }}
+    {% if is_granted('ROLE_ADMIN') %}
     <p>User: {{ review.user.name }}</p>
+    {% endif %}
     <p>Book: {{ review.book.title }}</p>
     {{ form_row(form.content) }}
-    {{ form_row(form.rating) }}
-    {#    {% if review.status != 'approved' %}#}
-    {#        {{ form_row(form.status) }}#}
-    {#    {% endif %}#}
+    <div class="mb-3">
+        <label>Rating</label>
+        {# Hidden input ligado al form #}
+        {{ form_widget(form.rating, {'id': 'review_rating', 'value': form.rating.vars.value|default(0)}) }}
+        <div id="star-container">
+            {% for i in 1..5 %}
+                <i class="bi fs-3 star {% if i <= form.rating.vars.value %}bi-star-fill text-warning{% else %}bi-star text-secondary{% endif %}" data-value="{{ i }}"></i>
+            {% endfor %}
+        </div>
+    </div>
     {{ form_rest(form) }}
     <button class="btn btn-success">Save changes</button>
     {{ form_end(form, {'render_rest': false}) }}
 
-    <a href="{{ path('review_index') }}">back to list</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('review_index') }}">back to list</a>
+    {% else %}
+        <a href="{{ path('book_show', {'id': review.book.id}) }}">back to book</a>
+    {% endif %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const stars = document.querySelectorAll('#star-container .star');
+            const ratingInput = document.getElementById('review_rating');
+            let currentRating = parseInt(ratingInput.value) || 0;
 
-    <form action="{{ path('review_delete', {'id': review.id}) }}" method="post" style="display:inline;">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
-        <button class="btn btn-danger" type="submit">Delete Review</button>
-    </form>
+            const highlightStars = (rating) => {
+                stars.forEach(star => {
+                    const value = parseInt(star.dataset.value);
+                    if (value <= rating) {
+                        star.classList.remove('text-secondary', 'bi-star');
+                        star.classList.add('text-warning', 'bi-star-fill');
+                    } else {
+                        star.classList.remove('text-warning', 'bi-star-fill');
+                        star.classList.add('text-secondary', 'bi-star');
+                    }
+                });
+            }
+
+            highlightStars(currentRating);
+
+            stars.forEach(star => {
+                star.addEventListener('mouseover', () => {
+                    highlightStars(parseInt(star.dataset.value));
+                });
+                star.addEventListener('mouseout', () => {
+                    highlightStars(currentRating);
+                });
+                star.addEventListener('click', () => {
+                    currentRating = parseInt(star.dataset.value);
+                    ratingInput.value = currentRating;
+                    highlightStars(currentRating);
+                });
+            });
+        });
+    </script>
 {% endblock %}
