@@ -40,7 +40,22 @@
                 {% endfor %}
                 <td>
                     <a class="btn btn-info" href="{{ path('book_show', {'id': book.id}) }}">show</a>
-                    <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
+                    {% set userBook = book.userBooks|filter(ub => ub.user.id == app.user.id)|first %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
+                        <form method="post" action="{{ path('book_delete', {'id': book.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this book?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
+                            <button class="btn btn-danger">delete</button>
+                        </form>
+                    {% elseif userBook is not null %}
+                        {% if userBook.status == 'finished' %}
+                            <div class="d-inline-block" data-bs-toggle="tooltip" title="You have already finished this book">
+                                <button class="btn btn-secondary" disabled>Edit Status</button>
+                            </div>
+                        {% else %}
+                            <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">Edit Status</a>
+                        {% endif %}
+                    {% endif %}
                 </td>
             </tr>
         {% else %}

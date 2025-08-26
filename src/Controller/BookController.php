@@ -172,8 +172,12 @@ class BookController extends AbstractController
 
         if ($formBook->isSubmitted() && $formBook->isValid()) {
             $entityManager->flush();
-
+            $redirect = $request->query->get('redirect', 'book_index');
             $this->addFlash('success', 'Status updated.');
+            if ($redirect === 'book_show') {
+                return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
+            }
+
             return $this->redirectToRoute('book_index');
         }
 
@@ -191,6 +195,10 @@ class BookController extends AbstractController
             foreach ($book->getUserBooks() as $userBook) {
                 $entityManager->remove($userBook);
             }
+            foreach ($book->getReviews() as $review) {
+                $entityManager->remove($review);
+            }
+
             $entityManager->remove($book);
             $entityManager->flush();
             $this->addFlash('success', 'Book successfully deleted.');

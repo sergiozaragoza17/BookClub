@@ -16,11 +16,6 @@
 
         {{ form_end(form) }}
         <a class="btn btn-info mt-3" href="{{ path('book_index') }}">back to list</a>
-
-        <form method="post" action="{{ path('book_delete', {'id': book.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
-            <button class="btn btn-danger">Delete</button>
-        </form>
     {% else %}
         {{ form_start(formBook) }}
         {% if book.coverImage %}
@@ -43,11 +38,6 @@
         {% endif %}
         {{ form_end(formBook) }}
         <a class="btn btn-info mt-3" href="{{ path('book_index') }}">back to list</a>
-
-        <form method="post" action="{{ path('book_remove', {'id': book.id}) }}" onsubmit="return confirm('Are you sure you want to remove it from your library?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
-            <button class="btn btn-danger">Remove from Library</button>
-        </form>
     {% endif %}
 
 
