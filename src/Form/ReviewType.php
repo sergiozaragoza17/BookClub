@@ -26,8 +26,8 @@ class ReviewType extends AbstractType
             ]);
         $builder->get('rating')
             ->addModelTransformer(new CallbackTransformer(
-                fn($ratingAsString) => (int) $ratingAsString, // de form a entity
-                fn($ratingAsInt) => (string) $ratingAsInt    // de entity a form
+                fn($ratingAsString) => (int) $ratingAsString,
+                fn($ratingAsInt) => (string) $ratingAsInt
             ));
         if ($options['is_admin']) {
             $builder->add('status', ChoiceType::class, [

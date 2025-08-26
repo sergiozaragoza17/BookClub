@@ -20,10 +20,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminReviewController extends AbstractController
 {
     #[Route('', name: 'admin_reviews')]
-    public function index(ReviewRepository $reviewRepo): Response
+    public function index(ReviewRepository $reviewRepository, Request $request): Response
     {
+        $status = $request->query->get('status'); // 'pending', 'approved', 'rejected' o null
+
+        if ($status === 'all') {
+            $reviews = $reviewRepository->findAll();
+        } else {
+            $reviews = $reviewRepository->findBy(['status' => $status]);
+        }
         return $this->render('admin/reviews/index.html.twig', [
-            'reviews' => $reviewRepo->findAll(),
+            'reviews' => $reviews,
+            'currentStatus' => $status,
         ]);
     }
 
