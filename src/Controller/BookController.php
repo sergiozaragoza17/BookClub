@@ -131,7 +131,6 @@ class BookController extends AbstractController
         UserBookRepository $userBookRepository
     ): Response {
         if ($this->isGranted('ROLE_ADMIN')) {
-            // --- ADMIN ---
             $form = $this->createForm(BookType::class, $book, [
                 'is_admin' => true,
                 'is_new' => false,
@@ -158,7 +157,6 @@ class BookController extends AbstractController
             ]);
         }
 
-        // --- USER ---
         $user = $this->getUser();
         $userBook = $userBookRepository->findOneBy([
             'user' => $user,
@@ -216,5 +214,38 @@ class BookController extends AbstractController
         }
 
         return $this->redirectToRoute('book_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/add-to-library', name: 'book_add_to_library', methods: ['POST'])]
+    public function addToLibrary(Book $book, Request $request, EntityManagerInterface $entityManager, UserBookRepository $userBookRepository): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException('You must be logged in to add books to your library.');
+        }
+
+        $existing = $userBookRepository->findOneBy([
+            'user' => $user,
+            'book' => $book,
+        ]);
+
+        if ($existing) {
+            $this->addFlash('info', 'This book is already in your library.');
+            return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
+        }
+
+        $status = $request->request->get('status', 'pending'); // default 'pending'
+
+        $userBook = new UserBook();
+        $userBook->setUser($user);
+        $userBook->setBook($book);
+        $userBook->setStatus($status);
+
+        $entityManager->persist($userBook);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Book added to your library!');
+
+        return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
     }
 }

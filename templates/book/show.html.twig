@@ -25,19 +25,6 @@
             <div class="row g-3">
                 {% for review in reviews %}
                     {% if review.status == 'approved' %}
-{#                        <div class="card-body">#}
-{#                            <h6 class="card-subtitle mb-2 text-muted">{{ review.user.username ?? 'Anonymous' }}{% if review.status == 'pending' %} (Pending){% endif %}</h6>#}
-{#                            <p class="card-text">{{ review.content }}</p>#}
-{#                            <div class="d-flex align-items-center mb-2">#}
-{#                                {% for i in 1..5 %}#}
-{#                                    {% if i <= review.rating %}#}
-{#                                        <i class="bi bi-star-fill text-warning"></i>#}
-{#                                    {% else %}#}
-{#                                        <i class="bi bi-star text-secondary"></i>#}
-{#                                    {% endif %}#}
-{#                                {% endfor %}#}
-{#                            </div>#}
-{#                        </div>#}
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
@@ -89,13 +76,49 @@
     </div>
     <div class="container mt-3 mb-3">
         <a class="btn btn-info" href="{{ path('book_index') }}">Back to list</a>
+        {% if userBook is not null %}
         <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">Edit</a>
+        {% endif %}
 
         {% if userBook is null %}
             <div class="d-inline-block" data-bs-toggle="tooltip" title="Add the book to your library first">
                 <button class="btn btn-secondary" disabled>
                     Write a review
                 </button>
+            </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addToLibraryModal">
+                Add to Library
+            </button>
+
+            <div class="modal fade" id="addToLibraryModal" tabindex="-1" aria-labelledby="addToLibraryModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="{{ path('book_add_to_library', {'id': book.id}) }}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addToLibraryModalLabel">Have you read the book?</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="btn-group-vertical w-100" role="group" aria-label="Library status">
+                                    <input type="radio" class="btn-check" name="status" id="statusPending" value="pending" autocomplete="off">
+                                    <label class="btn btn-outline-secondary btn-status w-100 mb-2" for="statusPending">Not yet</label>
+
+                                    <input type="radio" class="btn-check" name="status" id="statusReading" value="reading" autocomplete="off">
+                                    <label class="btn btn-outline-warning btn-status w-100 mb-2" for="statusReading">Reading</label>
+
+                                    <input type="radio" class="btn-check" name="status" id="statusFinished" value="finished" autocomplete="off">
+                                    <label class="btn btn-outline-success btn-status w-100" for="statusFinished">Finished</label>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
         {% elseif userBook.status != 'finished' %}
@@ -111,10 +134,4 @@
             </a>
         {% endif %}
     </div>
-
-
-{#    <form method="post" action="{{ path('book_delete', {'id': book.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">#}
-{#        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">#}
-{#        <button class="btn btn-danger">Delete</button>#}
-{#    </form>#}
 {% endblock %}
