@@ -78,7 +78,11 @@ class ReviewController extends AbstractController
             }
             $entityManager->flush();
 
-            return $this->redirectToRoute('review_index', [], Response::HTTP_SEE_OTHER);
+            if ($this->isGranted('ROLE_ADMIN')) {
+                return $this->redirectToRoute('review_index', [], Response::HTTP_SEE_OTHER);
+            } else {
+                return $this->redirectToRoute('book_show', ['id' => $review->getBook()->getId()], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->renderForm('review/edit.html.twig', [
@@ -95,6 +99,10 @@ class ReviewController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('review_index', [], Response::HTTP_SEE_OTHER);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('review_index', [], Response::HTTP_SEE_OTHER);
+        } else {
+            return $this->redirectToRoute('book_show', ['id' => $review->getBook()->getId()], Response::HTTP_SEE_OTHER);
+        }
     }
 }
