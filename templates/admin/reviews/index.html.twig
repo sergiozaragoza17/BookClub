@@ -37,13 +37,14 @@
                 <td>
                     <a href="{{ path('admin_review_show', {id: review.id}) }}">View</a>
 
-                    {% if review.status != 'approved' %}
+                    {% if review.status == 'pending' %}
                         <a href="{{ path('admin_review_approve', {id: review.id}) }}">Approve</a>
-                        {% if review.status != 'rejected' %}
-                            <a href="{{ path('admin_review_reject', {id: review.id}) }}">Reject</a>
-                        {% endif %}
+                        <a href="{{ path('admin_review_reject', {id: review.id}) }}">Reject</a>
+                    {% elseif review.status == 'approved' %}
+                        <a href="{{ path('admin_review_reject', {id: review.id}) }}">Reject</a>
+                    {% elseif review.status == 'rejected' %}
+                        <a href="{{ path('admin_review_approve', {id: review.id}) }}">Approve</a>
                     {% endif %}
-                    <a href="{{ path('admin_review_edit', {id: review.id}) }}">Edit</a>
                     <form method="post" action="{{ path('admin_review_delete', {id: review.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
                         <button>Delete</button>

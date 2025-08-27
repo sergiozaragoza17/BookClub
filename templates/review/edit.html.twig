@@ -12,7 +12,6 @@
     {{ form_row(form.content) }}
     <div class="mb-3">
         <label>Rating</label>
-        {# Hidden input ligado al form #}
         {{ form_widget(form.rating, {'id': 'review_rating', 'value': form.rating.vars.value|default(0)}) }}
         <div id="star-container">
             {% for i in 1..5 %}

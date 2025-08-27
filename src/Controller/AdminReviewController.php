@@ -22,7 +22,7 @@ class AdminReviewController extends AbstractController
     #[Route('', name: 'admin_reviews')]
     public function index(ReviewRepository $reviewRepository, Request $request): Response
     {
-        $status = $request->query->get('status'); // 'pending', 'approved', 'rejected' o null
+        $status = $request->query->get('status');
 
         if ($status === 'all') {
             $reviews = $reviewRepository->findAll();
@@ -43,53 +43,47 @@ class AdminReviewController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'admin_review_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Review $review, EntityManagerInterface $em): Response
-    {
-        $form = $this->createForm(ReviewType::class, $review);
-        if ($review->getStatus() === 'approved') {
-            $form->remove('status');
-        }
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
-            $this->addFlash('success', 'Review updated successfully.');
-            return $this->redirectToRoute('admin_reviews');
-        }
-
-        return $this->renderForm('admin/reviews/edit.html.twig', [
-            'review' => $review,
-            'form' => $form,
-        ]);
-    }
-
     #[Route('/{id}/approve', name: 'admin_review_approve')]
-    public function approve(Review $review, EntityManagerInterface $em): Response
+    public function approve(Review $review, EntityManagerInterface $em, Request $request): Response
     {
         $review->setStatus('approved');
         $em->flush();
         $this->addFlash('success', 'Review approved.');
-        return $this->redirectToRoute('admin_reviews');
+        $redirect = $request->query->get('redirect', 'admin_reviews');
+        $status = $request->query->get('status', 'all');
+        if ($redirect === 'book_show') {
+            return $this->redirectToRoute('book_show', ['id' => $review->getBook()->getId()]);
+        }
+        return $this->redirectToRoute('admin_reviews', ['status' => $status]);
     }
 
     #[Route('/{id}/reject', name: 'admin_review_reject')]
-    public function reject(Review $review, EntityManagerInterface $em): Response
+    public function reject(Review $review, EntityManagerInterface $em, Request  $request): Response
     {
         $review->setStatus('rejected');
         $em->flush();
         $this->addFlash('warning', 'Review rejected.');
-        return $this->redirectToRoute('admin_reviews');
+        $redirect = $request->query->get('redirect', 'admin_reviews');
+        $status = $request->query->get('status', 'all');
+        if ($redirect === 'book_show') {
+            return $this->redirectToRoute('book_show', ['id' => $review->getBook()->getId()]);
+        }
+        return $this->redirectToRoute('admin_reviews', ['status' => $status]);
     }
 
     #[Route('/{id}/delete', name: 'admin_review_delete', methods: ['POST'])]
     public function delete(Review $review, Request $request, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete-review-' . $review->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $review->getId(), $request->request->get('_token'))) {
             $em->remove($review);
             $em->flush();
             $this->addFlash('success', 'Review deleted successfully.');
         }
-        return $this->redirectToRoute('admin_reviews');
+        $redirect = $request->query->get('redirect', 'admin_reviews');
+        $status = $request->query->get('status', 'all');
+        if ($redirect === 'book_show') {
+            return $this->redirectToRoute('book_show', ['id' => $review->getBook()->getId()]);
+        }
+        return $this->redirectToRoute('admin_reviews', ['status' => $status]);
     }
 }

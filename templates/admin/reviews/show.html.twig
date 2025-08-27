@@ -14,6 +14,17 @@
         <li><strong>Status:</strong> {{ review.status }}</li>
     </ul>
 
-    <a href="{{ path('admin_review_edit', {id: review.id}) }}">Edit</a>
     <a href="{{ path('admin_reviews') }}">Back to list</a>
+    {% if review.status == 'pending' %}
+        <a href="{{ path('admin_review_approve', {id: review.id}) }}">Approve</a>
+        <a href="{{ path('admin_review_reject', {id: review.id}) }}">Reject</a>
+    {% elseif review.status == 'approved' %}
+        <a href="{{ path('admin_review_reject', {id: review.id}) }}">Reject</a>
+    {% elseif review.status == 'rejected' %}
+        <a href="{{ path('admin_review_approve', {id: review.id}) }}">Approve</a>
+    {% endif %}
+    <form method="post" action="{{ path('admin_review_delete', {id: review.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
+        <button>Delete</button>
+    </form>
 {% endblock %}
