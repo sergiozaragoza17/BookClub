@@ -29,7 +29,11 @@
                             <div class="card {% if review.status == 'pending' %}bg-light text-dark{% elseif review.status == 'rejected' %}bg-danger bg-opacity-25 text-dark{% endif %}">
                                 <div class="card-body">
                                     <h6 class="card-subtitle mb-2 text-muted">
-                                        {{ review.user.name ?? 'Anonymous' }}
+                                        {% if review.user.id != user.id %}
+                                            <a href="{{ path('user_profile', {'id': review.user.id}) }}">
+                                                {{ review.user.name ?? 'Anonymous' }}
+                                            </a>
+                                        {% endif %}
                                         {% if review.status == 'pending' %}
                                             (Pending)
                                         {% elseif review.status == 'rejected' %}
