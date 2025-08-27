@@ -12,6 +12,8 @@
         <li><strong>Rating:</strong> {{ review.rating }}</li>
         <li><strong>Content:</strong> {{ review.content }}</li>
         <li><strong>Status:</strong> {{ review.status }}</li>
+        <li><strong>Edited:</strong> {{ review.edited ? 'Edited' : 'Not Edited' }}</li>
+
     </ul>
 
     <a href="{{ path('admin_reviews') }}">Back to list</a>
