@@ -22,6 +22,7 @@
             <th>Rating</th>
             <th>Content</th>
             <th>Status</th>
+            <th>Edited</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -34,6 +35,7 @@
                 <td>{{ review.rating }}</td>
                 <td>{{ review.content|slice(0, 50) ~ '...' }}</td>
                 <td>{{ review.status }}</td>
+                <td>{{ review.edited ? 'Edited' : 'Not Edited' }}</td>
                 <td>
                     <a href="{{ path('admin_review_show', {id: review.id}) }}">View</a>
 

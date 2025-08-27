@@ -30,7 +30,12 @@
                                 <div class="card-body">
                                     <h6 class="card-subtitle mb-2 text-muted">
                                         {{ review.user.name ?? 'Anonymous' }}
-                                        {% if review.status == 'pending' %}(Pending){% elseif review.status == 'rejected' %}(Rejected){% endif %}
+                                        {% if review.status == 'pending' %}
+                                            (Pending)
+                                        {% elseif review.status == 'rejected' %}
+                                            (Rejected)
+                                        {% endif %}
+                                        {% if review.edited %}(Edited){% endif %}
                                     </h6>
                                     <p class="card-text">{{ review.content }}</p>
                                     <div class="d-flex align-items-center mb-2">

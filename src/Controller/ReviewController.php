@@ -75,8 +75,12 @@ class ReviewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $isApprovedOrRejectedBefore = in_array($review->getStatus(), ['approved', 'rejected']);
             if (!$this->isGranted('ROLE_ADMIN')) {
                 $review->setStatus('pending');
+                if ($isApprovedOrRejectedBefore) {
+                    $review->setEdited(true);
+                }
             }
             $entityManager->flush();
 

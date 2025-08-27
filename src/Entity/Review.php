@@ -22,6 +22,9 @@ class Review
     #[ORM\Column(length: 20)]
     private ?string $status = 'pending';
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $edited = false;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -87,6 +90,17 @@ class Review
     public function setBook(?Book $book): static
     {
         $this->book = $book;
+        return $this;
+    }
+
+    public function isEdited(): bool
+    {
+        return $this->edited;
+    }
+
+    public function setEdited(bool $edited): static
+    {
+        $this->edited = $edited;
         return $this;
     }
 }
