@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\UserType;
+use App\Repository\UserBookRepository;
 use App\Service\S3Uploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -28,6 +29,26 @@ class UserController extends AbstractController
         return $this->render('user/view.html.twig', [
             'user' => $user,
             'totalReviews' => $user->getTotalReviews(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'user_profile', methods: ['GET'])]
+    public function viewOtherProfile(User $user, UserBookRepository $userBookRepository): Response
+    {
+        $books = $userBookRepository->findBy(['user' => $user], ['id' => 'DESC'], 10);
+        return $this->render('user/view_other.html.twig', [
+            'user' => $user,
+            'books' => $books,
+        ]);
+    }
+
+    #[Route('/{id}/library', name: 'user_library', methods: ['GET'])]
+    public function viewLibrary(User $user, UserBookRepository $userBookRepository): Response
+    {
+        $books = $userBookRepository->findBy(['user' => $user]);
+        return $this->render('user/library.html.twig', [
+            'user' => $user,
+            'books' => $books,
         ]);
     }
 
