@@ -42,6 +42,7 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            $user->setRoles(['ROLE_USER']);
 
             if ($this->getParameter('kernel.environment') == 'dev'){
                 $user->setIsVerified(true);

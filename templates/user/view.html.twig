@@ -20,7 +20,7 @@
     <p><strong>Total Reviews Written</strong>  {{ totalReviews }} </p>
 
 
-    <a href="{{ path('profile_edit') }}" class="btn btn-primary">Edit Profile</a>
+    <a href="{{ path('profile_edit', {'id': user.id}) }}" class="btn btn-primary">Edit Profile</a>
     <a href="{{ path('profile_change_password') }}" class="btn btn-primary">Change Password</a>
 
     <form action="{{ path('profile_delete') }}" method="post" style="display:inline;">
