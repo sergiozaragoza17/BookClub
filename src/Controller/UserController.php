@@ -52,7 +52,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/edit', name: 'profile_edit')]
+    #[Route('/{id}/edit', name: 'profile_edit')]
     public function editProfile(
         Request $request,
         EntityManagerInterface $entityManager,
