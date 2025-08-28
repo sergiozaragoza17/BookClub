@@ -38,13 +38,13 @@
                             {% endif %}
                         {% endfor %}
                         {% if not alreadyInLibrary %}
-                        <button class="btn btn-sm btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addToLibraryModal">
+                        <button class="btn btn-sm btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addToLibraryModal_{{ book.book.id }}">
                             Add to Library
                         </button>
-                        <div class="modal fade" id="addToLibraryModal" tabindex="-1" aria-labelledby="addToLibraryModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="addToLibraryModal_{{ book.book.id }}" tabindex="-1" aria-labelledby="addToLibraryModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <form method="post" action="{{ path('book_add_to_library', {'id': book.book.id}) }}">
+                                    <form method="post" action="{{ path('book_add_to_library', {'id': book.book.id}) }}" >
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="addToLibraryModalLabel">Have you read the book?</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
