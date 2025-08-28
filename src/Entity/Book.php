@@ -23,6 +23,9 @@ class Book
     #[ORM\Column(type: 'integer')]
     private int $publishedYear;
 
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $created = null;
+
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
@@ -39,6 +42,7 @@ class Book
     {
         $this->reviews = new ArrayCollection();
         $this->userBooks = new ArrayCollection();
+        $this->created = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -126,6 +130,17 @@ class Book
     public function setCoverImage(?string $coverImage): self
     {
         $this->coverImage = $coverImage;
+        return $this;
+    }
+
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeInterface $created): self
+    {
+        $this->created = $created;
         return $this;
     }
 

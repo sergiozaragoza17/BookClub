@@ -3,3 +3,37 @@
     transition: transform 0.2s;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5); /* fondo semi-transparente */
+    border-radius: 50%; /* opcional, redondeado */
+}
+#reviewsCarousel {
+    position: relative;
+}
+#reviewsCarousel .carousel-control-prev,
+#reviewsCarousel .carousel-control-next {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+}
+
+#reviewsCarousel .carousel-control-prev {
+    left: 10px; /* dentro del contenedor */
+}
+
+#reviewsCarousel .carousel-control-next {
+    right: 10px; /* dentro del contenedor */
+}
+
+.review-card {
+    height: 350px;       /* altura uniforme para todas las reviews */
+    overflow: hidden;    /* evita que el contenido desborde */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+

@@ -4,5 +4,121 @@
 
 {% block body %}
     <h1>{{ title }}</h1>
-    <p>Tu comunidad de lectura favorita.</p>
+    <p>Welcome to BookClub 📚 — a clean, intuitive platform to discover, track, and review your favorite books. Explore recent reviews, find your next read, and connect with fellow book lovers.</p>
+    <hr>
+    <h2>Reviews</h2>
+    <h2>Latest Reviews</h2>
+    {% if reviews %}
+        <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for review in reviews|batch(3) %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <div class="d-flex justify-content-center">
+                            {% for r in review %}
+                                <div class="card mx-2" style="width: 30%;">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            {% if r.user.id != app.user.id %}
+                                                <a href="{{ path('user_profile', {'id': r.user.id}) }}">{{ r.user.name }}</a>
+                                            {% else %}
+                                                {{ r.user.name }}
+                                            {% endif %}
+                                            on
+                                            <a href="{{ path('book_show', {'id': r.book.id}) }}">{{ r.book.title }}</a>
+                                        </h6>
+                                        {% if r.content|length > 100 %}
+                                            <p class="card-text">{{ r.content|slice(0, 100) ~ '...' }}</p>
+                                            {# TODO poner boton de ver completa en reviews de book show #}
+                                        {% else %}
+                                            {{ r.content }}
+                                        {% endif %}
+{#                                        <p class="card-text">{{ r.content }}</p>#}
+                                        <div class="d-flex align-items-center mb-2">
+                                            {% for i in 1..5 %}
+                                                {% if i <= r.rating %}
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                {% else %}
+                                                    <i class="bi bi-star text-secondary"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endif %}
+    <hr>
+{#     --- Books Section ---#}
+    <h2>Books</h2>
+    <h2>Recent Books</h2>
+    {% if books %}
+        <div id="booksCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% set chunkedBooks = books|batch(5) %}
+                {% for bookGroup in chunkedBooks %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <div class="d-flex justify-content-center">
+                            {% for book in bookGroup %}
+                                <div class="card mx-2" style="width: 150px;">
+                                    <a href="{{ path('book_show', {'id': book.id}) }}">
+                                        <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                                    </a>
+                                    <div class="card-body p-2 text-center">
+                                        <h6 class="card-title">{{ book.title }}</h6>
+                                        {% if app.user and not userBooksStatus[book.id] %}
+                                            <form method="post" action="{{ path('book_add_to_library', {'id': book.id}) }}">
+                                                <button class="btn btn-sm btn-primary w-100">Add to Library</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#booksCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#booksCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+        <h2>Top 3 Books</h2>
+        <div class="row g-3">
+            {% for bookData in topBooks %}
+                {% set book = bookData[0] %}
+                <div class="col-4">
+                    <div class="card text-center">
+                        <a href="{{ path('book_show', {'id': book.id}) }}">
+                            <img src="{{ book.coverImage }}" class="card-img-top" style="height:150px; object-fit:cover;">
+                        </a>
+                        <div class="card-body">
+                            <h6>{{ book.title }}</h6>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No books yet.</p>
+    {% endif %}
+    <hr>
+{#     --- Clubs Section Placeholder --- #}
+    <h2><a href="{{ path("club_index") }}">Clubs</a> </h2>
+    <p>Coming soon...</p>
 {% endblock %}

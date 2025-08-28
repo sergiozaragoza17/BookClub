@@ -25,14 +25,16 @@
             <div class="row g-3">
                 {% for review in reviews %}
                     {% if is_granted('ROLE_ADMIN') or review.status == 'approved' or (review.status in ['pending','rejected'] and user.id == review.user.id) %}
-                        <div class="col-12">
-                            <div class="card {% if review.status == 'pending' %}bg-light text-dark{% elseif review.status == 'rejected' %}bg-danger bg-opacity-25 text-dark{% endif %}">
+                        <div class="col-md-4"> {# Cambiamos col-12 por col-md-4 para mostrar 3 por fila #}
+                            <div class="card review-card {% if review.status == 'pending' %}bg-light text-dark{% elseif review.status == 'rejected' %}bg-danger bg-opacity-25 text-dark{% endif %}">
                                 <div class="card-body">
                                     <h6 class="card-subtitle mb-2 text-muted">
                                         {% if review.user.id != user.id %}
                                             <a href="{{ path('user_profile', {'id': review.user.id}) }}">
                                                 {{ review.user.name ?? 'Anonymous' }}
                                             </a>
+                                        {% else %}
+                                            {{ review.user.name ?? 'Anonymous' }}
                                         {% endif %}
                                         {% if review.status == 'pending' %}
                                             (Pending)
@@ -41,7 +43,12 @@
                                         {% endif %}
                                         {% if review.edited %}(Edited){% endif %}
                                     </h6>
-                                    <p class="card-text">{{ review.content }}</p>
+                                    {% if review.content|length > 100 %}
+                                    <p class="card-text">{{ review.content|slice(0, 100) ~ '...' }}</p>
+                                        {# TODO poner boton de ver completa en reviews de book show #}
+                                    {% else %}
+                                        {{ review.content }}
+                                    {% endif %}
                                     <div class="d-flex align-items-center mb-2">
                                         {% for i in 1..5 %}
                                             {% if i <= review.rating %}
