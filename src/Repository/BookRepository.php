@@ -21,6 +21,18 @@ class BookRepository extends ServiceEntityRepository
         parent::__construct($registry, Book::class);
     }
 
+    public function findTopBooksByFiveStarReviews(int $limit = 3)
+    {
+        return $this->createQueryBuilder('b')
+            ->select('b, COUNT(r.id) AS fiveStarCount')
+            ->leftJoin('b.reviews', 'r', 'WITH', 'r.status = :approved AND r.rating = 5')
+            ->setParameter('approved', 'approved')
+            ->groupBy('b.id')
+            ->orderBy('fiveStarCount', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return TestBook[] Returns an array of TestBook objects
 //     */

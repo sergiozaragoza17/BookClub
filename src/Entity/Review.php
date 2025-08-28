@@ -25,6 +25,9 @@ class Review
     #[ORM\Column(type: 'boolean')]
     private bool $edited = false;
 
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTimeInterface $created = null;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -32,6 +35,11 @@ class Review
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Book $book = null;
+
+    public function __construct()
+    {
+        $this->created = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -101,6 +109,17 @@ class Review
     public function setEdited(bool $edited): static
     {
         $this->edited = $edited;
+        return $this;
+    }
+
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeInterface $created): self
+    {
+        $this->created = $created;
         return $this;
     }
 }
