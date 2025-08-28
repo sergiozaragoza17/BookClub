@@ -79,9 +79,7 @@
                                     <div class="card-body p-2 text-center">
                                         <h6 class="card-title">{{ book.title }}</h6>
                                         {% if app.user and not userBooksStatus[book.id] %}
-                                            <form method="post" action="{{ path('book_add_to_library', {'id': book.id}) }}">
-                                                <button class="btn btn-sm btn-primary w-100">Add to Library</button>
-                                            </form>
+                                            {% include 'userbook/add_to_library_button.html.twig' with {'book': book} %}
                                         {% endif %}
                                     </div>
                                 </div>

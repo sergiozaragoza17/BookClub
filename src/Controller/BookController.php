@@ -238,23 +238,21 @@ class BookController extends AbstractController
             'book' => $book,
         ]);
 
-        if ($existing) {
-            $this->addFlash('info', 'This book is already in your library.');
-            return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
+        $status = $request->request->get('status', 'pending');
+
+        if (!$existing) {
+            $userBook = new UserBook();
+            $userBook->setUser($user);
+            $userBook->setBook($book);
+            $userBook->setStatus($status);
+
+            $entityManager->persist($userBook);
+            $entityManager->flush();
+            VarDumper::dump($userBook);
         }
+        $message = $existing ? 'This book is already in your library.' : 'Book added to your library!';
 
-        $status = $request->request->get('status', 'pending'); // default 'pending'
-
-        $userBook = new UserBook();
-        $userBook->setUser($user);
-        $userBook->setBook($book);
-        $userBook->setStatus($status);
-
-        $entityManager->persist($userBook);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Book added to your library!');
-
-        return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
+        $this->addFlash($existing ? 'info' : 'success', $message);
+        return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('book_index'));
     }
 }

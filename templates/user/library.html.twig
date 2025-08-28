@@ -23,39 +23,39 @@
                         {% endif %}
                     {% endfor %}
                     {% if not alreadyInLibrary %}
-                    <button class="btn btn-sm btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addToLibraryModal">
-                        Add to Library
-                    </button>
-                    <div class="modal fade" id="addToLibraryModal" tabindex="-1" aria-labelledby="addToLibraryModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <form method="post" action="{{ path('book_add_to_library', {'id': book.book.id}) }}">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addToLibraryModalLabel">Have you read the book?</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <div class="btn-group-vertical w-100" role="group" aria-label="Library status">
-                                            <input type="radio" class="btn-check" name="status" id="statusPending" value="pending" autocomplete="off">
-                                            <label class="btn btn-outline-secondary btn-status w-100 mb-2" for="statusPending">Not yet</label>
-
-                                            <input type="radio" class="btn-check" name="status" id="statusReading" value="reading" autocomplete="off">
-                                            <label class="btn btn-outline-warning btn-status w-100 mb-2" for="statusReading">Reading</label>
-
-                                            <input type="radio" class="btn-check" name="status" id="statusFinished" value="finished" autocomplete="off">
-                                            <label class="btn btn-outline-success btn-status w-100" for="statusFinished">Finished</label>
+                        <button class="btn btn-sm btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addToLibraryModal_{{ book.book.id }}">
+                            Add to Library
+                        </button>
+                        <div class="modal fade" id="addToLibraryModal_{{ book.book.id }}" tabindex="-1" aria-labelledby="addToLibraryModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <form method="post" action="{{ path('book_add_to_library', {'id': book.book.id}) }}" >
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addToLibraryModalLabel">Have you read the book?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                    </div>
 
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-primary">Save</button>
-                                    </div>
-                                </form>
+                                        <div class="modal-body">
+                                            <div class="btn-group-vertical w-100" role="group" aria-label="Library status">
+                                                <input type="radio" class="btn-check" name="status" id="statusPending" value="pending" autocomplete="off">
+                                                <label class="btn btn-outline-secondary btn-status w-100 mb-2" for="statusPending">Not yet</label>
+
+                                                <input type="radio" class="btn-check" name="status" id="statusReading" value="reading" autocomplete="off">
+                                                <label class="btn btn-outline-warning btn-status w-100 mb-2" for="statusReading">Reading</label>
+
+                                                <input type="radio" class="btn-check" name="status" id="statusFinished" value="finished" autocomplete="off">
+                                                <label class="btn btn-outline-success btn-status w-100" for="statusFinished">Finished</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     {% endif %}
                 </div>
             </div>
