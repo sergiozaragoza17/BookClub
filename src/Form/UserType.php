@@ -23,6 +23,10 @@ class UserType extends AbstractType
                 'label' => 'Name',
                 'required' => false,
             ])
+            ->add('userName', TextType::class, [
+                'label' => 'UserName',
+                'required' => false,
+            ])
             ->add('email', EmailType::class)
             ->add('bio', TextareaType::class, [
                 'label' => 'Bio',

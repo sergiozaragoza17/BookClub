@@ -3,13 +3,9 @@
 {% block title %}{{ user.name }}'s Profile{% endblock %}
 
 {% block body %}
-    <h1>{{ user.name }}'s Profile</h1>
-    {% if user.profileImage %}
-        <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="img-thumbnail" width="150">
-{#    {% else %}#}
-{#        <img src="/images/default-profile.png" alt="Default Profile" class="img-thumbnail" width="150">#}
-    {% endif %}
+    <h1>{{ user.userName }}'s Profile</h1>
 
+    <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="img-thumbnail" width="150">
     <p><strong>Bio:</strong> {{ user.bio ?? 'Not set' }}</p>
     <p><strong>Fav. Book:</strong> {{ user.favBook ?? 'Not set' }}</p>
     <p><strong>Currently Reading:</strong> {{ user.currentlyReading ?? 'Not set' }}</p>
