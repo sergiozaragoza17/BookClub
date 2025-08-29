@@ -31,10 +31,10 @@
                                     <h6 class="card-subtitle mb-2 text-muted">
                                         {% if review.user.id != user.id %}
                                             <a href="{{ path('user_profile', {'id': review.user.id}) }}">
-                                                {{ review.user.name ?? 'Anonymous' }}
+                                                {{ review.user.userName ?? 'Anonymous' }}
                                             </a>
                                         {% else %}
-                                            {{ review.user.name ?? 'Anonymous' }}
+                                            {{ review.user.userName ?? 'Anonymous' }}
                                         {% endif %}
                                         {% if review.status == 'pending' %}
                                             (Pending)

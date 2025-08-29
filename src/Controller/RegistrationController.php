@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\RegistrationFormType;
+use App\Form\RegistrationType;
 use App\Security\EmailVerifier;
 use App\Security\LoginFormAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,74 +20,27 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    private EmailVerifier $emailVerifier;
-
-    public function __construct(EmailVerifier $emailVerifier)
-    {
-        $this->emailVerifier = $emailVerifier;
-    }
-
     #[Route('/register', name: 'register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, LoginFormAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+            $user->setPassword($userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData()));
             $user->setRoles(['ROLE_USER']);
-
-            if ($this->getParameter('kernel.environment') == 'dev'){
-                $user->setIsVerified(true);
-                $user->setJoinedAt(new \DateTimeImmutable());
-            }
+            $user->setJoinedAt(new \DateTimeImmutable());
+            $user->setProfileImage('https://bookclub-portfolio.s3.eu-north-1.amazonaws.com/profiles/defaultProfileImage/default_profile_image.jpg');
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            if ($this->getParameter('kernel.environment') !== 'dev') {
-                $this->emailVerifier->sendEmailConfirmation('verify_email', $user,
-                    (new TemplatedEmail())
-                        ->from(new Address('no-reply@bookclub.local', 'BookClub Mailer'))
-                        ->to($user->getEmail())
-                        ->subject('Please Confirm your Email')
-                        ->htmlTemplate('registration/confirmation_email.html.twig')
-                );
-            }
-
-            return $userAuthenticator->authenticateUser(
-                $user,
-                $authenticator,
-                $request
-            );
+            return $userAuthenticator->authenticateUser($user, $authenticator, $request );
         }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
-    }
-
-    #[Route('/verify/email', name: 'verify_email')]
-    public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
-        try {
-            $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
-        } catch (VerifyEmailExceptionInterface $exception) {
-            $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
-
-            return $this->redirectToRoute('register');
-        }
-
-        $this->addFlash('success', 'Your email address has been verified.');
-
-        return $this->redirectToRoute('home');
     }
 }
