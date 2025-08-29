@@ -20,11 +20,7 @@ final class Version20250827050931 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('ALTER TABLE book ADD created DATETIME DEFAULT NULL');
-
-        // Paso 2: dar valor a los existentes
         $this->addSql('UPDATE book SET created = NOW()');
-
-        // Paso 3: volverlo NOT NULL
         $this->addSql('ALTER TABLE book MODIFY created DATETIME NOT NULL');
     }
 

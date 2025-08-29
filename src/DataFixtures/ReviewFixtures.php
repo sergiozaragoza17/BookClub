@@ -17,13 +17,8 @@ class ReviewFixtures extends Fixture implements FixtureGroupInterface
     {
         $faker = Factory::create();
 
-        // 📚 Todos los libros
         $books = $manager->getRepository(Book::class)->findAll();
-
-        // 👤 Todos los usuarios
         $allUsers = $manager->getRepository(User::class)->findAll();
-
-        // Filtrar solo ROLE_USER
         $users = array_filter($allUsers, function (User $user) {
             return in_array('ROLE_USER', $user->getRoles(), true);
         });
@@ -34,7 +29,6 @@ class ReviewFixtures extends Fixture implements FixtureGroupInterface
         }
 
         foreach ($books as $book) {
-            // Entre 1 y 5 reviews por libro
             $numReviews = $faker->numberBetween(1, 5);
 
             for ($i = 0; $i < $numReviews; $i++) {

@@ -21,11 +21,7 @@ final class Version20250827050415 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE review ADD created DATETIME DEFAULT NULL');
-
-        // setea la fecha actual en las reviews ya existentes
         $this->addSql('UPDATE review SET created = NOW()');
-
-        // ahora sí, vuelve la columna NOT NULL
         $this->addSql('ALTER TABLE review MODIFY created DATETIME NOT NULL');
     }
 

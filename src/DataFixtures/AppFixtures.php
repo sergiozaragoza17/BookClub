@@ -18,7 +18,6 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        // Admin User
         $admin = new User();
         $admin->setEmail('admin@example.com');
         $admin->setRoles(['ROLE_ADMIN']);
@@ -26,7 +25,6 @@ class AppFixtures extends Fixture
         $admin->setIsVerified(true);
         $manager->persist($admin);
 
-        // Normal User
         $user = new User();
         $user->setEmail('user@example.com');
         $user->setRoles(['ROLE_USER']);

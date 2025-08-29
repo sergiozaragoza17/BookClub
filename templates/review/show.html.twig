@@ -8,28 +8,6 @@
     <p><strong>Book:</strong> {{ book.title }}</p>
     <p><strong>Content:</strong> {{ review.content ?? 'Not set' }}</p>
     <p><strong>Rating:</strong> {{ review.rating ?? 'Not set' }}</p>
-{#    <p><strong>Fav. Book:</strong> {{ user.favBook ?? 'Not set' }}</p>#}
-{#    <p><strong>Currently Reading:</strong> {{ user.currentlyReading ?? 'Not set' }}</p>#}
-{#    <p><strong>Fav. Genres:</strong>  {{ user.favGenres|join(', ') }} </p>#}
-{#    <p><strong>Joined at:</strong>  {{ user.joinedAt|date }} </p>#}
-
-
-{#    <table class="table">#}
-{#        <tbody>#}
-{#            <tr>#}
-{#                <th>Id</th>#}
-{#                <td>{{ review.id }}</td>#}
-{#            </tr>#}
-{#            <tr>#}
-{#                <th>Content</th>#}
-{#                <td>{{ review.content }}</td>#}
-{#            </tr>#}
-{#            <tr>#}
-{#                <th>Rating</th>#}
-{#                <td>{{ review.rating }}</td>#}
-{#            </tr>#}
-{#        </tbody>#}
-{#    </table>#}
 
     <a href="{{ path('review_index') }}">back to list</a>
 

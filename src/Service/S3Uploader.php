@@ -31,7 +31,6 @@ class S3Uploader
             'Bucket' => $this->bucketName,
             'Key'    => $key,
             'SourceFile' => $file->getPathname(),
-//            'ACL'    => 'public-read', // Para que la imagen sea accesible públicamente
         ]);
 
         return $this->s3Client->getObjectUrl($this->bucketName, $key);
