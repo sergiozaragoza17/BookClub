@@ -105,6 +105,26 @@
                     targetForm.submit();
                 }
             });
+            document.querySelectorAll("form[data-confirm]").forEach(form => {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    targetForm = form;
+                    modalTitle.textContent = form.getAttribute("data-confirm-title") || "Confirm action";
+                    modalMessage.textContent = form.getAttribute("data-confirm");
+
+                    const action = form.getAttribute("data-confirm-action") || "";
+                    modalAccept.className = "btn";
+                    if (action.toLowerCase() === "delete") {
+                        modalAccept.classList.add("btn-danger");
+                    } else if (action.toLowerCase() === "remove") {
+                        modalAccept.classList.add("btn-warning");
+                    } else {
+                        modalAccept.classList.add("btn-primary");
+                    }
+
+                    confirmModal.show();
+                });
+            });
         });
     </script>
 {% endblock %}

@@ -47,7 +47,8 @@
                               action="{{ path('book_delete', {id: book.id}) }}"
                               style="display:inline;"
                               data-confirm="Are you sure you want to permanently delete this book and all its data?"
-                              data-confirm-title="Delete Book">
+                              data-confirm-title="Delete Book"
+                              data-confirm-action="delete">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
                             <button class="btn btn-danger">Delete</button>
                         </form>
@@ -60,7 +61,8 @@
                                   action="{{ path('book_remove', {id: book.id}) }}"
                                   style="display:inline;"
                                   data-confirm="Are you sure you want to remove this book from your library?"
-                                  data-confirm-title="Remove from Library">
+                                  data-confirm-title="Remove from Library"
+                                  data-confirm-action="remove">
                                 <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
                                 <button class="btn btn-warning">Remove from Library</button>
                             </form>
@@ -70,7 +72,8 @@
                                   action="{{ path('book_remove', {id: book.id}) }}"
                                   style="display:inline;"
                                   data-confirm="Are you sure you want to remove this book from your library?"
-                                  data-confirm-title="Remove from Library">
+                                  data-confirm-title="Remove from Library"
+                                  data-confirm-action="remove">
                                 <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
                                 <button class="btn btn-warning">Remove from Library</button>
                             </form>
