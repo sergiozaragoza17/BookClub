@@ -32,7 +32,6 @@
                                         {% else %}
                                             {{ r.content }}
                                         {% endif %}
-{#                                        <p class="card-text">{{ r.content }}</p>#}
                                         <div class="d-flex align-items-center mb-2">
                                             {% for i in 1..5 %}
                                                 {% if i <= r.rating %}
@@ -61,7 +60,6 @@
         <p>No reviews yet.</p>
     {% endif %}
     <hr>
-{#     --- Books Section ---#}
     <h2>Books</h2>
     <h2>Recent Books</h2>
     {% if books %}
@@ -116,7 +114,6 @@
         <p>No books yet.</p>
     {% endif %}
     <hr>
-{#     --- Clubs Section Placeholder --- #}
     <h2><a href="{{ path("club_index") }}">Clubs</a> </h2>
     <p>Coming soon...</p>
 {% endblock %}

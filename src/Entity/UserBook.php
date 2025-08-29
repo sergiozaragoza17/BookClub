@@ -22,7 +22,7 @@ class UserBook
     private ?Book $book = null;
 
     #[ORM\Column(type: 'string', length: 20)]
-    private ?string $status = null; // stand by, reading, finished
+    private ?string $status = null;
 
     #[ORM\Column(type: 'datetime')]
     private \DateTimeInterface $createdAt;
@@ -32,7 +32,6 @@ class UserBook
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    // Getters y setters
     public function getId(): ?int { return $this->id; }
     public function getUser(): ?User { return $this->user; }
     public function setUser(User $user): self { $this->user = $user; return $this; }
