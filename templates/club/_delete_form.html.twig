@@ -2,7 +2,8 @@
       action="{{ path('club_delete', {id: club.id}) }}"
       style="display:inline;"
       data-confirm="Are you sure you want to delete this club?"
-      data-confirm-title="Delete club">
+      data-confirm-title="Delete club"
+      data-confirm-action="delete">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ club.id) }}">
     <button class="btn btn-danger">Delete</button>
 </form>
