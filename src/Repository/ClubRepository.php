@@ -31,4 +31,16 @@ class ClubRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getMostPopular(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.members', 'm')
+            ->addSelect('COUNT(m) AS HIDDEN memberCount')
+            ->groupBy('c.id')
+            ->orderBy('memberCount', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

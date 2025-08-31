@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\BookRepository;
+use App\Repository\ClubRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\UserBookRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,7 +14,7 @@ use Symfony\Component\VarDumper\VarDumper;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'home')]
-    public function index(ReviewRepository $reviewRepository, BookRepository $bookRepository, UserBookRepository $userBookRepository): Response
+    public function index(ReviewRepository $reviewRepository, BookRepository $bookRepository, UserBookRepository $userBookRepository, ClubRepository $clubRepository): Response
     {
         $reviews = $reviewRepository->findBy(
             ['status' => 'approved'],
@@ -33,12 +34,16 @@ class HomeController extends AbstractController
         }
 
         $topBooks = $bookRepository->findTopBooksByFiveStarReviews(3);
+
+        $popularClubs = $clubRepository->getMostPopular(5);
+
         return $this->render('home/index.html.twig', [
             'title' => 'Welcome to BookClub 📚',
             'reviews' => $reviews,
             'books' => $books,
             'userBooksStatus' => $userBooksStatus,
             'topBooks' => $topBooks,
+            'popularClubs' => $popularClubs,
         ]);
     }
 }
