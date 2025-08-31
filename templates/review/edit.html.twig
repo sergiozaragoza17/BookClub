@@ -9,6 +9,9 @@
     <p>User: {{ review.user.name }}</p>
     {% endif %}
     <p>Book: {{ review.book.title }}</p>
+    {% if club is not null %}
+        <p>Club: {{ club.name }}</p>
+    {% endif %}
     {{ form_row(form.content) }}
     <div class="mb-3">
         <label>Rating</label>

@@ -69,21 +69,6 @@ class RegistrationType extends AbstractType
                     ]),
                 ],
             ]);
-//            ->add('plainPassword', PasswordType::class, [
-//                'mapped' => false,
-//                'attr' => ['autocomplete' => 'new-password'],
-//                'constraints' => [
-//                    new NotBlank(['message' => 'Please enter a password']),
-//                    new Length(['min' => 6, 'minMessage' => 'Password must be at least {{ limit }} characters', 'max' => 4096]),
-//                ],
-//            ])
-//            ->add('plainPasswordConfirm', PasswordType::class, [
-//                'mapped' => false,
-//                'attr' => ['autocomplete' => 'new-password'],
-//                'constraints' => [
-//                    new NotBlank(['message' => 'Please confirm your password']),
-//                ],
-//            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ChangePasswordType;
 use App\Form\UserType;
+use App\Repository\ReviewRepository;
 use App\Repository\UserBookRepository;
 use App\Service\S3Uploader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,14 +22,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends AbstractController
 {
     #[Route('', name: 'profile')]
-    public function viewProfile(): Response
+    public function viewProfile(ReviewRepository $reviewRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+        $totalReviews = $reviewRepository->getTotalReviewsApprovedByUser($user);
 
         return $this->render('user/view.html.twig', [
             'user' => $user,
-            'totalReviews' => $user->getTotalReviews(),
+            'totalReviews' => $totalReviews,
         ]);
     }
 

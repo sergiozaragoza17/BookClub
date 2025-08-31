@@ -36,6 +36,10 @@ class Review
     #[ORM\JoinColumn(nullable: false)]
     private ?Book $book = null;
 
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: true, onDelete: "CASCADE")]
+    private ?Club $club = null;
+
     public function __construct()
     {
         $this->created = new \DateTimeImmutable();
@@ -120,6 +124,18 @@ class Review
     public function setCreated(\DateTimeInterface $created): self
     {
         $this->created = $created;
+        return $this;
+    }
+
+    public function getClub(): ?Club
+    {
+        return $this->club;
+    }
+
+    public function setClub(?Club $club): self
+    {
+        $this->club = $club;
+
         return $this;
     }
 }

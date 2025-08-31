@@ -11,6 +11,8 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Description</th>
+                <th>Genre</th>
+                <th>Author</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -20,9 +22,27 @@
                 <td>{{ club.id }}</td>
                 <td>{{ club.name }}</td>
                 <td>{{ club.description }}</td>
+                <td>{{ club.genre.name }}</td>
+                <td>{{ club.createdBy.username }}</td>
                 <td>
-                    <a href="{{ path('club_show', {'id': club.id}) }}">show</a>
-                    <a href="{{ path('club_edit', {'id': club.id}) }}">edit</a>
+                    <div class="d-flex align-items-center gap-2">
+                    <a class="btn btn-info" href="{{ path('club_show', {'id': club.id}) }}">show</a>
+                    {% if app.user %}
+                        {% if club.members.contains(app.user) %}
+                            <form method="post" action="{{ path('club_leave', {id: club.id}) }}">
+                                <button type="submit" class="btn btn-danger">Leave club</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{{ path('club_join', {id: club.id}) }}">
+                                <button type="submit" class="btn btn-success">Join club</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                    {% if club.createdBy == app.user or is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('club_edit', {'id': club.id}) }}">edit</a>
+                        {{ include('club/_delete_form.html.twig') }}
+                    {% endif %}
+                    </div>
                 </td>
             </tr>
         {% else %}
@@ -33,5 +53,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('club_new') }}">Create new</a>
+    <a class="btn btn-info" href="{{ path('club_new') }}">Create new</a>
 {% endblock %}

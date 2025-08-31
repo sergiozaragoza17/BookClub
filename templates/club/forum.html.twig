@@ -1,0 +1,41 @@
+<h1>{{ club.name }} - Forum</h1>
+
+<div class="mb-4">
+    {{ form_start(form) }}
+    {{ form_row(form.content) }}
+    <button class="btn btn-primary">Post</button>
+    {{ form_end(form) }}
+</div>
+<hr>
+<div class="forum-posts">
+    {% for post in posts %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <p>{{ post.content }}</p>
+                <small>By {{ post.user.userName ?? 'Anonymous' }} on {{ post.created|date('Y-m-d H:i') }}</small>
+
+                {% if app.user != post.user %}
+                    <div class="collapse mt-2" id="replyForm{{ post.id }}">
+                        {{ form_start(replyForms[post.id], {'action': path('club_forum', {'club': club.id})}) }}
+                        <input type="hidden" name="parent_id" value="{{ post.id }}">
+                        {{ form_row(replyForms[post.id].content) }}
+                        <button class="btn btn-secondary btn-sm">Reply</button>
+                        {{ form_end(replyForms[post.id]) }}
+                    </div>
+                {% endif %}
+
+                {% for reply in post.replies %}
+                    <div class="card mt-2 ms-4">
+                        <div class="card-body">
+                            <p>{{ reply.content }}</p>
+                            <small>By {{ reply.user.userName ?? 'Anonymous' }} on {{ reply.created|date('Y-m-d H:i') }}</small>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <p>No posts yet...</p>
+    {% endfor %}
+</div>
+<a href="{{ path('club_show',{'id': club.id}) }}">back to club</a>

@@ -3,9 +3,13 @@
 {% block title %}New Review{% endblock %}
 
 {% block body %}
-    <h1>Edit Review</h1>
+    <h1>New Review</h1>
     {{ form_start(form) }}
     <p>Book: {{ review.book.title }}</p>
+    {% if club %}
+        <p>Club: {{ club.name }}</p>
+    {% endif %}
+
     {{ form_row(form.content) }}
     <div class="mb-3">
         <label>Rating</label>
