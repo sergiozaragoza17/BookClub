@@ -3,15 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\Club;
 use App\Entity\Review;
 use App\Form\ReviewType;
+use App\Repository\ClubBookRepository;
+use App\Repository\ClubRepository;
 use App\Repository\ReviewRepository;
+use App\Repository\UserBookRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\VarDumper\VarDumper;
 
 #[Route('/review')]
 class ReviewController extends AbstractController
@@ -50,6 +55,60 @@ class ReviewController extends AbstractController
             'review' => $review,
             'form' => $form,
             'book' => $book,
+            'club' => null,
+        ]);
+    }
+
+    #[Route('/{book}/new/club/{club}', name: 'review_new_club', methods: ['GET', 'POST'])]
+    public function newClubReview(
+        Request $request,
+        Book $book,
+        Club $club,
+        EntityManagerInterface $entityManager,
+        ClubBookRepository $clubBookRepository,
+        ClubRepository $clubRepository,
+        UserBookRepository $userBookRepository
+    ): Response
+    {
+        VarDumper::dump($request->request->all());
+        $user = $this->getUser();
+
+        if (!$club->getMembers()->contains($user) || !$clubBookRepository->findOneBy(['club' => $club, 'book' => $book])) {
+            $this->addFlash('warning', 'You cannot add a review for this club.');
+            return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
+        }
+
+        $userBook = $userBookRepository->findOneBy([
+            'user' => $user,
+            'book' => $book,
+        ]);
+        if (!$userBook || $userBook->getStatus() !== 'finished') {
+            $this->addFlash('warning', 'You must finish this book in your library before adding a club review.');
+            return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
+        }
+
+        $review = new Review();
+        $review->setBook($book);
+        $review->setUser($user);
+        $review->setClub($club);
+
+        $form = $this->createForm(ReviewType::class, $review);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $review->setStatus('pending');
+            $entityManager->persist($review);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Your club review has been submitted and is pending approval.');
+            return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
+        }
+
+        return $this->renderForm('review/new.html.twig', [
+            'review' => $review,
+            'form' => $form,
+            'book' => $book,
+            'club' => $club,
         ]);
     }
 
@@ -94,6 +153,7 @@ class ReviewController extends AbstractController
         return $this->renderForm('review/edit.html.twig', [
             'review' => $review,
             'form' => $form,
+            'club' => $review->getClub() ?? null,
         ]);
     }
 

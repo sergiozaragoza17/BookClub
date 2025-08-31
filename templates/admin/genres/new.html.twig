@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Genre{% endblock %}
+
+{% block body %}
+    <h1>Create a new Genre</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.save) }}
+    {{ form_end(form) }}
+{% endblock %}

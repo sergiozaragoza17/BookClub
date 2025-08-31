@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Book;
+use App\Entity\Genre;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -31,6 +33,12 @@ class BookType extends AbstractType
                 ->add('description', TextareaType::class, [
                     'label' => 'Description',
                     'required' => false,
+                ])
+                ->add('genre', EntityType::class, [
+                    'class' => Genre::class,
+                    'choice_label' => 'name',
+                    'placeholder' => 'Select a genre',
+
                 ])
                 ->add('coverImage', FileType::class, [
                     'label' => 'Cover Image (PNG/JPEG)',

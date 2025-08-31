@@ -67,11 +67,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $joinedAt = null;
 
+    #[ORM\OneToMany(targetEntity: ClubPost::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $posts;
+
+    #[ORM\OneToMany(targetEntity: ClubBookPost::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $bookPosts;
+
     public function __construct()
     {
         $this->clubs = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->userBooks = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+        $this->bookPosts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -289,13 +297,56 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTotalReviews(): int
-    {
-        return $this->reviews->count();
-    }
-
     public function __toString(): string
     {
         return $this->name;
+    }
+
+    public function getClubPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addClubPost(ClubPost $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeClubPost(ClubBookPost $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getClubBookPosts(): Collection
+    {
+        return $this->bookPosts;
+    }
+
+    public function addClubBookPost(ClubBookPost $post): self
+    {
+        if (!$this->bookPosts->contains($post)) {
+            $this->bookPosts->add($post);
+            $post->setUser($this);
+        }
+        return $this;
+    }
+
+    public function removeClubBookPost(ClubBookPost $post): self
+    {
+        if ($this->bookPosts->removeElement($post)) {
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+        return $this;
     }
 }

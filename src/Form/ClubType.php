@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Club;
+use App\Entity\Genre;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,7 +16,11 @@ class ClubType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('members')
+            ->add('genre', EntityType::class, [
+                'class' => Genre::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Select a genre',
+            ]);
         ;
     }
 

@@ -5,21 +5,21 @@
 {% block body %}
     <h1>My Profile</h1>
     <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="img-thumbnail" width="150">
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Name:</strong> {{ user.name ?? 'Not set' }}</p>
-    <p><strong>Username:</strong> {{ user.userName ?? 'Not set' }}</p>
-    <p><strong>Bio:</strong> {{ user.bio ?? 'Not set' }}</p>
-    <p><strong>Fav. Book:</strong> {{ user.favBook ?? 'Not set' }}</p>
-    <p><strong>Currently Reading:</strong> {{ user.currentlyReading ?? 'Not set' }}</p>
-    <p><strong>Fav. Genres:</strong>  {{ user.favGenres|join(', ') }} </p>
-    <p><strong>Joined at:</strong>  {{ user.joinedAt|date }} </p>
-    <p><strong>Total Reviews Written</strong>  {{ totalReviews }} </p>
+    <p><strong>Email: </strong> {{ user.email }}</p>
+    <p><strong>Name: </strong> {{ user.name ?? 'Not set' }}</p>
+    <p><strong>Username: </strong> {{ user.userName ?? 'Not set' }}</p>
+    <p><strong>Bio: </strong> {{ user.bio ?? 'Not set' }}</p>
+    <p><strong>Fav. Book: </strong> {{ user.favBook ?? 'Not set' }}</p>
+    <p><strong>Currently Reading: </strong> {{ user.currentlyReading ?? 'Not set' }}</p>
+    <p><strong>Fav. Genres: </strong>  {{ user.favGenres|join(', ') }} </p>
+    <p><strong>Joined at: </strong>  {{ user.joinedAt|date }} </p>
+    <p><strong>Total Reviews Written: </strong>  {{ totalReviews }} </p>
 
 
-    <a href="{{ path('profile_edit', {'id': user.id}) }}" class="btn btn-primary">Edit Profile</a>
+    <a href="{{ path('profile_edit', {'id':  user.id}) }}" class="btn btn-primary">Edit Profile</a>
     <a href="{{ path('profile_change_password') }}" class="btn btn-primary">Change Password</a>
 
-    <form action="{{ path('profile_delete') }}" method="post" style="display:inline;">
+    <form action="{{ path('profile_delete') }}" method="post" style="display: inline;">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
         <button class="btn btn-danger" type="submit">Delete Account</button>
     </form>

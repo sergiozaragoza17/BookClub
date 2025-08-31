@@ -32,17 +32,25 @@ class Book
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $coverImage = null;
 
+    #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: 'books')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Genre $genre = null;
+
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'book')]
     private Collection $reviews;
 
     #[ORM\OneToMany(targetEntity: UserBook::class, mappedBy: 'book')]
     private Collection $userBooks;
 
+    #[ORM\OneToMany(targetEntity: ClubBookPost::class, mappedBy: 'book', orphanRemoval: true)]
+    private Collection $bookPosts;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
         $this->userBooks = new ArrayCollection();
         $this->created = new \DateTimeImmutable();
+        $this->bookPosts = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -138,6 +146,22 @@ class Book
         return $this->created;
     }
 
+    /**
+     * @return Genre|null
+     */
+    public function getGenre(): ?Genre
+    {
+        return $this->genre;
+    }
+
+    /**
+     * @param Genre|null $genre
+     */
+    public function setGenre(?Genre $genre): void
+    {
+        $this->genre = $genre;
+    }
+
     public function setCreated(\DateTimeInterface $created): self
     {
         $this->created = $created;
@@ -147,6 +171,30 @@ class Book
     public function __toString(): string
     {
         return $this->title ?? '';
+    }
+
+    public function getClubBookPosts(): Collection
+    {
+        return $this->bookPosts;
+    }
+
+    public function addClubBookPost(ClubBookPost $post): self
+    {
+        if (!$this->bookPosts->contains($post)) {
+            $this->bookPosts->add($post);
+            $post->setBook($this);
+        }
+        return $this;
+    }
+
+    public function removeClubBookPost(ClubBookPost $post): self
+    {
+        if ($this->bookPosts->removeElement($post)) {
+            if ($post->getBook() === $this) {
+                $post->setBook(null);
+            }
+        }
+        return $this;
     }
 
 }

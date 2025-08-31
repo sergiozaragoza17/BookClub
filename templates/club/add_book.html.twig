@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Add a book to {{ club.name }}</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.book) }}
+    <button class="btn btn-primary">Add Book</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('club_show', {'id': club.id}) }}">Back to club</a>
+{% endblock %}

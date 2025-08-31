@@ -8,6 +8,8 @@ use App\Entity\UserBook;
 use App\Form\BookType;
 use App\Form\UserBookType;
 use App\Repository\BookRepository;
+use App\Repository\ClubBookRepository;
+use App\Repository\ClubRepository;
 use App\Repository\UserBookRepository;
 use App\Service\S3Uploader;
 use Doctrine\ORM\EntityManagerInterface;
@@ -81,7 +83,7 @@ class BookController extends AbstractController
             ]);
 
             if ($existingUserBook) {
-                $this->addFlash('warning', 'Ya tienes este libro en tu biblioteca.');
+                $this->addFlash('warning', $book->getTitle().' is already in your library.');
                 return $this->redirectToRoute('book_index');
             }
             if (!$this->isGranted('ROLE_ADMIN')) {
@@ -94,7 +96,7 @@ class BookController extends AbstractController
                 $entityManager->persist($userBook);
                 $entityManager->flush();
             }
-            $this->addFlash('success', 'Book saved successfully.');
+            $this->addFlash('success', $book->getTitle().' saved successfully.');
 
             return $this->redirectToRoute('book_index');
         }
@@ -106,7 +108,7 @@ class BookController extends AbstractController
     }
 
     #[Route('/{id}', name: 'book_show', methods: ['GET'])]
-    public function show(Book $book,  UserBookRepository $userBookRepository): Response
+    public function show(Book $book,  UserBookRepository $userBookRepository, ClubRepository $clubRepository, ClubBookRepository $clubBookRepository): Response
     {
         $user = $this->getUser();
         $userBook = $userBookRepository->findOneBy([
@@ -115,11 +117,21 @@ class BookController extends AbstractController
         ]);
         $reviews = $book->getReviews();
 
+        $memberClubs = $user ? $clubRepository->findByMember($user) : [];
+
+        $validClubs = [];
+        foreach ($memberClubs as $club) {
+            if ($clubBookRepository->findOneBy(['club' => $club, 'book' => $book])) {
+                $validClubs[] = $club;
+            }
+        }
+
         return $this->render('book/show.html.twig', [
             'book' => $book,
             'userBook' => $userBook,
             'reviews' => $reviews,
             'user' => $user,
+            'validClubs' => $validClubs,
         ]);
     }
 
@@ -148,7 +160,7 @@ class BookController extends AbstractController
 
                 $entityManager->flush();
 
-                $this->addFlash('success', 'Book saved successfully.');
+                $this->addFlash('success', $book->getTitle().' saved successfully.');
                 return $this->redirectToRoute('book_index');
             }
 
@@ -165,7 +177,7 @@ class BookController extends AbstractController
         ]);
 
         if (!$userBook) {
-            throw $this->createNotFoundException('This book is not on your library.');
+            throw $this->createNotFoundException($book->getTitle().' is not on your library.');
         }
 
         $formBook = $this->createForm(UserBookType::class, $userBook);
@@ -174,7 +186,7 @@ class BookController extends AbstractController
         if ($formBook->isSubmitted() && $formBook->isValid()) {
             $entityManager->flush();
             $redirect = $request->query->get('redirect', 'book_index');
-            $this->addFlash('success', 'Status updated.');
+            $this->addFlash('success', $book->getTitle().' reading status updated.');
             if ($redirect === 'book_show') {
                 return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
             }
@@ -202,7 +214,7 @@ class BookController extends AbstractController
 
             $entityManager->remove($book);
             $entityManager->flush();
-            $this->addFlash('success', 'Book successfully deleted.');
+            $this->addFlash('success', $book->getTitle().' successfully deleted.');
         }
 
         return $this->redirectToRoute('book_index', [], Response::HTTP_SEE_OTHER);
@@ -219,7 +231,7 @@ class BookController extends AbstractController
         if ($this->isCsrfTokenValid('remove'.$book->getId(), $request->request->get('_token'))) {
             $entityManager->remove($userBook);
             $entityManager->flush();
-            $this->addFlash('success', 'Book successfully removed from library.');
+            $this->addFlash('success', $book->getTitle().' successfully removed from library.');
         }
 
         return $this->redirectToRoute('book_index', [], Response::HTTP_SEE_OTHER);
@@ -250,7 +262,7 @@ class BookController extends AbstractController
             $entityManager->flush();
             VarDumper::dump($userBook);
         }
-        $message = $existing ? 'This book is already in your library.' : 'Book added to your library!';
+        $message = $existing ? $book->getTitle().' is already in your library.' : $book->getTitle().' added to your library!';
 
         $this->addFlash($existing ? 'info' : 'success', $message);
         return $this->redirect($request->headers->get('referer') ?? $this->generateUrl('book_index'));

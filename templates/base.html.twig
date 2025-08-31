@@ -34,6 +34,7 @@
                         <a class="nav-link" href="{{ path('club_index') }}">Clubs</a>
                     </li>
                     {% if is_granted('ROLE_ADMIN') %}
+                        <li><a class="nav-link" href="{{ path('admin_genre_new') }}">Genres</a></li>
                         <li><a class="nav-link" href="{{ path('admin_users') }}">Users</a></li>
                         <li><a class="nav-link" href="{{ path('admin_reviews', {'status': 'all'}) }}">Reviews</a></li>
                     {% endif %}

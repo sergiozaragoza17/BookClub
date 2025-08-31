@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Book;
+use App\Entity\Club;
 use App\Entity\Review;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
