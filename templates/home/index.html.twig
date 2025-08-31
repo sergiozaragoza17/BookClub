@@ -114,6 +114,40 @@
         <p>No books yet.</p>
     {% endif %}
     <hr>
-    <h2><a href="{{ path("club_index") }}">Clubs</a> </h2>
-    <p>Coming soon...</p>
+    <section class="mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Clubs</h2>
+            <a href="{{ path('club_index') }}" class="btn btn-sm btn-outline-primary">See all</a>
+        </div>
+
+        <div class="row">
+            {% for club in popularClubs %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ path('club_show', {id: club.id}) }}" class="text-decoration-none">
+                                    {{ club.name }}
+                                </a>
+                            </h5>
+                            <p class="card-text text-muted">
+                                {{ club.description|length > 100 ? club.description|slice(0, 100) ~ '...' : club.description }}
+                            </p>
+
+                            {% if app.user and not club.members.contains(app.user) %}
+                                <form method="post" action="{{ path('club_join', {id: club.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('join' ~ club.id) }}">
+                                    <button class="btn btn-sm btn-primary">Join Club</button>
+                                </form>
+                            {% else %}
+                                <span class="badge bg-success">Member</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p>No clubs available yet.</p>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}
