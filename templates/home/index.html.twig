@@ -70,14 +70,24 @@
                     <div class="carousel-item {% if loop.first %}active{% endif %}">
                         <div class="d-flex justify-content-center">
                             {% for book in bookGroup %}
-                                <div class="card mx-2" style="width: 150px;">
+                                <div class="card mx-2">
                                     <a href="{{ path('book_show', {'id': book.id}) }}">
-                                        <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                                        <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="book-cover card-img-top" >
                                     </a>
                                     <div class="card-body p-2 text-center">
-                                        <h6 class="card-title">{{ book.title }}</h6>
+                                        <h6 class="card-title book-card-title">{{ book.title }}</h6>
                                         {% if app.user and not userBooksStatus[book.id] %}
                                             {% include 'userbook/add_to_library_button.html.twig' with {'book': book} %}
+                                        {% else %}
+                                            <form method="post"
+                                                  action="{{ path('book_remove', {id: book.id}) }}"
+                                                  style="display:inline;"
+                                                  data-confirm="Are you sure you want to remove this book from your library?"
+                                                  data-confirm-title="Remove from Library"
+                                                  data-confirm-action="remove">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
+                                                <button class="btn btn-warning">Remove from Library</button>
+                                            </form>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -101,7 +111,7 @@
                 <div class="col-4">
                     <div class="card text-center">
                         <a href="{{ path('book_show', {'id': book.id}) }}">
-                            <img src="{{ book.coverImage }}" class="card-img-top" style="height:150px; object-fit:cover;">
+                            <img src="{{ book.coverImage }}" class="book-cover card-img-top">
                         </a>
                         <div class="card-body">
                             <h6>{{ book.title }}</h6>
