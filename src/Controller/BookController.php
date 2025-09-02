@@ -13,6 +13,7 @@ use App\Repository\ClubRepository;
 use App\Repository\UserBookRepository;
 use App\Service\S3Uploader;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -25,29 +26,46 @@ use Symfony\Component\VarDumper\VarDumper;
 class BookController extends AbstractController
 {
     #[Route('/', name: 'book_index', methods: ['GET'])]
-    public function index(BookRepository $bookRepository, UserBookRepository $userBookRepository): Response
+    public function index(BookRepository $bookRepository, UserBookRepository $userBookRepository, Request $request, PaginatorInterface $paginator): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $books = $bookRepository->findAll();
+        $queryBuilder = $bookRepository->createQueryBuilder('b');
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            20
+        );
 
         return $this->render('book/index.html.twig', [
-            'books' => $books,
+            'pagination' => $pagination,
             'user' => $user,
         ]);
     }
 
     #[Route('/my-books', name: 'my_books', methods: ['GET'])]
-    public function myBooks(BookRepository $bookRepository, UserBookRepository $userBookRepository): Response
+    public function myBooks(BookRepository $bookRepository, UserBookRepository $userBookRepository, Request $request, PaginatorInterface $paginator): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $books = $userBookRepository->findByUser($user);
+        $queryBuilder = $userBookRepository->createQueryBuilder('ub')
+            ->join('ub.book', 'b')
+            ->addSelect('b')
+            ->where('ub.user = :user')
+            ->setParameter('user', $user);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            20
+        );
 
         return $this->render('book/my_books.html.twig', [
-            'books' => $books,
+            'pagination' => $pagination,
+            'user' => $user,
         ]);
     }
 

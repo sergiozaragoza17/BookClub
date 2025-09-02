@@ -1,104 +1,201 @@
+{#{% extends 'base.html.twig' %}#}
+
+{#{% block title %}Book index{% endblock %}#}
+
+{#{% block body %}#}
+{#    <h1>Book index</h1>#}
+
+{#    <table class="table">#}
+{#        <thead>#}
+{#            <tr>#}
+{#                <th>Id</th>#}
+{#                <th>Title</th>#}
+{#                <th>Author</th>#}
+{#                <th>Published Year</th>#}
+{#                <th>Description</th>#}
+{#                <th>actions</th>#}
+{#            </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#        {% for book in books %}#}
+{#            <tr>#}
+{#                <td>{{ book.id }}</td>#}
+{#                <td>{{ book.title }}</td>#}
+{#                <td>{{ book.author }}</td>#}
+{#                <td>{{ book.publishedYear }}</td>#}
+{#                <td>#}
+{#                    {% if book.description|length > 50 %}#}
+{#                        {{ book.description|slice(0, 50) ~ '...' }}#}
+{#                    {% else %}#}
+{#                        {{ book.description }}#}
+{#                    {% endif %}#}
+{#                </td>#}
+{#                <td>#}
+{#                    <a class="btn btn-info" href="{{ path('book_show', {'id': book.id, 'fromList': 1}) }}">show</a>#}
+{#                    {% set userBook = book.userBooks|filter(ub => ub.user.id == app.user.id)|first %}#}
+{#                    {{ dump(userBook) }}#}
+{#                    {% if is_granted('ROLE_ADMIN') %}#}
+{#                        <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">edit</a>#}
+{#                        <form method="post"#}
+{#                              action="{{ path('book_delete', {id: book.id}) }}"#}
+{#                              style="display:inline;"#}
+{#                              data-confirm="Are you sure you want to permanently delete this book and all its data?"#}
+{#                              data-confirm-title="Delete Book"#}
+{#                              data-confirm-action="delete">#}
+{#                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">#}
+{#                            <button class="btn btn-danger">Delete</button>#}
+{#                        </form>#}
+{#                    {% elseif userBook  %}#}
+{#                        <form method="post"#}
+{#                              action="{{ path('book_remove', {id: book.id}) }}"#}
+{#                              style="display:inline;"#}
+{#                              data-confirm="Are you sure you want to remove this book from your library?"#}
+{#                              data-confirm-title="Remove from Library"#}
+{#                              data-confirm-action="remove">#}
+{#                            <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">#}
+{#                            <button class="btn btn-warning">Remove from Library</button>#}
+{#                        </form>#}
+{#                    {% else %}#}
+{#                        <button class="btn  btn-primary" data-bs-toggle="modal" data-bs-target="#addToLibraryModal_{{ book.id }}">#}
+{#                            Add to Library#}
+{#                        </button>#}
+{#                        <div class="modal fade" id="addToLibraryModal_{{ book.id }}" tabindex="-1" aria-labelledby="addToLibraryModalLabel" aria-hidden="true">#}
+{#                            <div class="modal-dialog modal-dialog-centered">#}
+{#                                <div class="modal-content">#}
+{#                                    <form method="post" action="{{ path('book_add_to_library', {'id': book.id}) }}" >#}
+{#                                        <div class="modal-header">#}
+{#                                            <h5 class="modal-title" id="addToLibraryModalLabel">Have you read the book?</h5>#}
+{#                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#                                        </div>#}
+
+{#                                        <div class="modal-body">#}
+{#                                            <div class="btn-group-vertical w-100" role="group" aria-label="Library status">#}
+{#                                                <input type="radio" class="btn-check" name="status" id="statusPending" value="pending" autocomplete="off">#}
+{#                                                <label class="btn btn-outline-secondary btn-status w-100 mb-2" for="statusPending">Not yet</label>#}
+
+{#                                                <input type="radio" class="btn-check" name="status" id="statusReading" value="reading" autocomplete="off">#}
+{#                                                <label class="btn btn-outline-warning btn-status w-100 mb-2" for="statusReading">Reading</label>#}
+
+{#                                                <input type="radio" class="btn-check" name="status" id="statusFinished" value="finished" autocomplete="off">#}
+{#                                                <label class="btn btn-outline-success btn-status w-100" for="statusFinished">Finished</label>#}
+{#                                            </div>#}
+{#                                        </div>#}
+
+{#                                        <div class="modal-footer">#}
+{#                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>#}
+{#                                            <button type="submit" class="btn btn-primary">Save</button>#}
+{#                                        </div>#}
+{#                                    </form>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    {% endif %}#}
+{#                </td>#}
+{#            </tr>#}
+{#        {% else %}#}
+{#            <tr>#}
+{#                <td colspan="7">no records found</td>#}
+{#            </tr>#}
+{#        {% endfor %}#}
+{#        </tbody>#}
+{#    </table>#}
+
+
+{#{% endblock %}#}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Book index{% endblock %}
 
 {% block body %}
-    <h1>Book index</h1>
+    <h1 class="mb-4">Books</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Published Year</th>
-                <th>Description</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for book in books %}
-            <tr>
-                <td>{{ book.id }}</td>
-                <td>{{ book.title }}</td>
-                <td>{{ book.author }}</td>
-                <td>{{ book.publishedYear }}</td>
-                <td>
-                    {% if book.description|length > 50 %}
-                        {{ book.description|slice(0, 50) ~ '...' }}
-                    {% else %}
-                        {{ book.description }}
-                    {% endif %}
-                </td>
-                <td>
-                    <a class="btn btn-info" href="{{ path('book_show', {'id': book.id, 'fromList': 1}) }}">show</a>
-                    {% set userBook = book.userBooks|filter(ub => ub.user.id == app.user.id)|first %}
-{#                    {{ dump(userBook) }}#}
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
-                        <form method="post"
-                              action="{{ path('book_delete', {id: book.id}) }}"
-                              style="display:inline;"
-                              data-confirm="Are you sure you want to permanently delete this book and all its data?"
-                              data-confirm-title="Delete Book"
-                              data-confirm-action="delete">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
-                            <button class="btn btn-danger">Delete</button>
-                        </form>
-                    {% elseif userBook  %}
-                        <form method="post"
-                              action="{{ path('book_remove', {id: book.id}) }}"
-                              style="display:inline;"
-                              data-confirm="Are you sure you want to remove this book from your library?"
-                              data-confirm-title="Remove from Library"
-                              data-confirm-action="remove">
-                            <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
-                            <button class="btn btn-warning">Remove from Library</button>
-                        </form>
-                    {% else %}
-                        <button class="btn  btn-primary" data-bs-toggle="modal" data-bs-target="#addToLibraryModal_{{ book.id }}">
-                            Add to Library
-                        </button>
-                        <div class="modal fade" id="addToLibraryModal_{{ book.id }}" tabindex="-1" aria-labelledby="addToLibraryModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <form method="post" action="{{ path('book_add_to_library', {'id': book.id}) }}" >
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addToLibraryModalLabel">Have you read the book?</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-
-                                        <div class="modal-body">
-                                            <div class="btn-group-vertical w-100" role="group" aria-label="Library status">
-                                                <input type="radio" class="btn-check" name="status" id="statusPending" value="pending" autocomplete="off">
-                                                <label class="btn btn-outline-secondary btn-status w-100 mb-2" for="statusPending">Not yet</label>
-
-                                                <input type="radio" class="btn-check" name="status" id="statusReading" value="reading" autocomplete="off">
-                                                <label class="btn btn-outline-warning btn-status w-100 mb-2" for="statusReading">Reading</label>
-
-                                                <input type="radio" class="btn-check" name="status" id="statusFinished" value="finished" autocomplete="off">
-                                                <label class="btn btn-outline-success btn-status w-100" for="statusFinished">Finished</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-primary">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+            {% for book in pagination %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <a href="{{ path('book_show', {'id': book.id, 'fromList': 1}) }}">
+                            <img src="{{ book.coverImage }}" class="card-img-top book-cover" alt="{{ book.title }}">
+                        </a>
+                        <div class="card-body p-2">
+                            <h6 class="card-title text-truncate" title="{{ book.title }}">
+                                {{ book.title }}
+                            </h6>
+                            <p class="card-text small mb-2 text-muted">{{ book.author }}</p>
                         </div>
-                    {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                        <div class="card-footer text-center">
+                            {% set userBook = book.userBooks|filter(ub => ub.user.id == app.user.id)|first %}
 
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a class="btn btn-sm btn-info mb-1" href="{{ path('book_edit', {'id': book.id}) }}">Edit</a>
+                                <form method="post"
+                                      action="{{ path('book_delete', {id: book.id}) }}"
+                                      style="display:inline;"
+                                      data-confirm="Are you sure you want to permanently delete this book and all its data?"
+                                      data-confirm-title="Delete Book"
+                                      data-confirm-action="delete">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
+                                    <button class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            {% elseif userBook %}
+                                <form method="post"
+                                      action="{{ path('book_remove', {id: book.id}) }}"
+                                      style="display:inline;"
+                                      data-confirm="Are you sure you want to remove this book from your library?"
+                                      data-confirm-title="Remove from Library"
+                                      data-confirm-action="remove">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
+                                    <button class="btn btn-sm btn-warning w-100">Remove</button>
+                                </form>
+                            {% else %}
+                                <button class="btn btn-sm btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addToLibraryModal_{{ book.id }}">
+                                    Add to Library
+                                </button>
 
+                                {# Modal para añadir a la librería #}
+                                <div class="modal fade" id="addToLibraryModal_{{ book.id }}" tabindex="-1" aria-labelledby="addToLibraryModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form method="post" action="{{ path('book_add_to_library', {'id': book.id}) }}" >
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="addToLibraryModalLabel">Have you read the book?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <div class="btn-group-vertical w-100" role="group" aria-label="Library status">
+                                                        <input type="radio" class="btn-check" name="status" id="statusPending_{{ book.id }}" value="pending" autocomplete="off">
+                                                        <label class="btn btn-outline-secondary btn-status w-100 mb-2" for="statusPending_{{ book.id }}">Not yet</label>
+
+                                                        <input type="radio" class="btn-check" name="status" id="statusReading_{{ book.id }}" value="reading" autocomplete="off">
+                                                        <label class="btn btn-outline-warning btn-status w-100 mb-2" for="statusReading_{{ book.id }}">Reading</label>
+
+                                                        <input type="radio" class="btn-check" name="status" id="statusFinished_{{ book.id }}" value="finished" autocomplete="off">
+                                                        <label class="btn btn-outline-success btn-status w-100" for="statusFinished_{{ book.id }}">Finished</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Save</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p>No records found</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% import 'pagination/pagination_cards.html.twig' as cards %}
+    <div class="d-flex justify-content-center mt-4">
+        {{ cards.render(pagination) }}
+    </div>
 {% endblock %}

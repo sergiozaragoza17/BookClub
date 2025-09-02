@@ -16,6 +16,7 @@ use App\Repository\ClubBookRepository;
 use App\Repository\ClubPostRepository;
 use App\Repository\ClubRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,30 +27,45 @@ use Symfony\Component\VarDumper\VarDumper;
 class ClubController extends AbstractController
 {
     #[Route('/', name: 'club_index', methods: ['GET'])]
-    public function index(ClubRepository $clubRepository): Response
+    public function index(ClubRepository $clubRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        $queryBuilder = $clubRepository->createQueryBuilder('c')
+            ->orderBy('c.name', 'ASC');
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            12 // clubs por página
+        );
+
         return $this->render('club/index.html.twig', [
-            'clubs' => $clubRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
 
     #[Route('/my-clubs', name: 'my_clubs', methods: ['GET'])]
-    public function myClubs(ClubRepository $clubRepository): Response
+    public function myClubs(ClubRepository $clubRepository, Request $request, PaginatorInterface $paginator): Response
     {
         $user = $this->getUser();
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
 
-        $clubs = $clubRepository->createQueryBuilder('c')
+        $queryBuilder = $clubRepository->createQueryBuilder('c')
             ->join('c.members', 'm')
             ->where('m = :user')
             ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
+            ->orderBy('c.name', 'ASC');
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            12
+        );
+
 
         return $this->render('club/my_clubs.html.twig', [
-            'clubs' => $clubs,
+            'pagination' => $pagination,
         ]);
     }
 
