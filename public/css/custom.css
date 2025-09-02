@@ -51,7 +51,7 @@
 }
 
 .review-card {
-    height: 350px;
+    height: 100%;
     overflow: hidden;
     display: flex;
     flex-direction: column;

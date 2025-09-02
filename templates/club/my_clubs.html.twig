@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Clubs{% endblock %}
+
+{% block body %}
+    <h1>My Clubs</h1>
+
+    {% if clubs is empty %}
+        <p>You haven't joined any clubs yet.</p>
+    {% else %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Genre</th>
+                <th>Author</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for club in clubs %}
+                <tr>
+                    <td>{{ club.name }}</td>
+                    <td>{{ club.description }}</td>
+                    <td>{{ club.genre.name }}</td>
+                    <td>{{ club.createdBy.username }}</td>
+                    <td>
+                        <a class="btn btn-info" href="{{ path('club_show', {'id': club.id}) }}">View</a>
+                        <form method="post" action="{{ path('club_leave', {id: club.id}) }}" class="d-inline">
+                            <button type="submit" class="btn btn-danger">Leave</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <div class="d-flex gap-2 mt-3">
+        <a class="btn btn-primary" href="{{ path('club_new') }}">Create New Club</a>
+        <a class="btn btn-secondary" href="{{ path('club_index') }}">See All Clubs</a>
+    </div>
+{% endblock %}

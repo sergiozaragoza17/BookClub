@@ -30,13 +30,23 @@ class BookController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $books = $bookRepository->findAll();
-        } else {
-            $books = $userBookRepository->findByUser($user);
+        $books = $bookRepository->findAll();
 
-        }
         return $this->render('book/index.html.twig', [
+            'books' => $books,
+            'user' => $user,
+        ]);
+    }
+
+    #[Route('/my-books', name: 'my_books', methods: ['GET'])]
+    public function myBooks(BookRepository $bookRepository, UserBookRepository $userBookRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $books = $userBookRepository->findByUser($user);
+
+        return $this->render('book/my_books.html.twig', [
             'books' => $books,
         ]);
     }

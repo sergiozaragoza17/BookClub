@@ -12,10 +12,10 @@
         {% for clubBook in clubBooks %}
             <div class="card d-inline-block" style="width: auto;">
                 <a href="{{ path('book_show', {'id' : clubBook.book.id}) }}">
-                    <img src="{{ clubBook.book.coverImage }}" alt="{{ clubBook.book.title }}" style="display: block; max-width: 300px; height: auto;">
+                    <img src="{{ clubBook.book.coverImage }}" alt="{{ clubBook.book.title }}" class="book-cover">
                 </a>
                 <div class="card-body p-2" style="width: 300px;">
-                    <h5 class="card-title">{{ clubBook.book.title }}</h5>
+                    <h5 class="card-title book-card-title">{{ clubBook.book.title }}</h5>
                     <a class="btn btn-outline-warning btn-sm" href="{{ path('club_book_forum', {'book': clubBook.book.id, 'club' : clubBook.club.id}) }}">Forum</a>
                 </div>
             </div>
