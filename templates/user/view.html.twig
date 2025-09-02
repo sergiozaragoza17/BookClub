@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1>My Profile</h1>
-    <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="img-thumbnail" width="150">
+    <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="img-thumbnail profile-img">
     <p><strong>Email: </strong> {{ user.email }}</p>
     <p><strong>Name: </strong> {{ user.name ?? 'Not set' }}</p>
     <p><strong>Username: </strong> {{ user.userName ?? 'Not set' }}</p>

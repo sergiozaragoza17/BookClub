@@ -35,12 +35,14 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'user_profile', methods: ['GET'])]
-    public function viewOtherProfile(User $user, UserBookRepository $userBookRepository): Response
+    public function viewOtherProfile(User $user, UserBookRepository $userBookRepository, ReviewRepository $reviewRepository): Response
     {
+        $totalReviews = $reviewRepository->getTotalReviewsApprovedByUser($user);
         $books = $userBookRepository->findBy(['user' => $user], ['id' => 'DESC'], 10);
         return $this->render('user/view_other.html.twig', [
             'user' => $user,
             'books' => $books,
+            'totalReviews' => $totalReviews,
         ]);
     }
 
