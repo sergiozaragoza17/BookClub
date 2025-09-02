@@ -33,6 +33,26 @@ class ClubController extends AbstractController
         ]);
     }
 
+    #[Route('/my-clubs', name: 'my_clubs', methods: ['GET'])]
+    public function myClubs(ClubRepository $clubRepository): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $clubs = $clubRepository->createQueryBuilder('c')
+            ->join('c.members', 'm')
+            ->where('m = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+
+        return $this->render('club/my_clubs.html.twig', [
+            'clubs' => $clubs,
+        ]);
+    }
+
     #[Route('/new', name: 'club_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

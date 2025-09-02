@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Book index{% endblock %}
+
+{% block body %}
+    <h1>Book index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Published Year</th>
+                <th>Description</th>
+                {% if not is_granted('ROLE_ADMIN') %}
+                    <th>Status</th>
+                {% endif %}
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for book in books %}
+            <tr>
+                <td>{{ book.id }}</td>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.publishedYear }}</td>
+                <td>
+                    {% if book.description|length > 50 %}
+                        {{ book.description|slice(0, 50) ~ '...' }}
+                    {% else %}
+                        {{ book.description }}
+                    {% endif %}
+                </td>
+                {% for ub in book.userBooks %}
+                    {% if ub.user.id == app.user.id %}
+                        <td>{{ ub.status }}</td>
+                    {% endif %}
+                {% endfor %}
+                <td>
+                    <a class="btn btn-info" href="{{ path('book_show', {'id': book.id, 'fromList': 1}) }}">show</a>
+                    {% set userBook = book.userBooks|filter(ub => ub.user.id == app.user.id)|first %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">edit</a>
+                        <form method="post"
+                              action="{{ path('book_delete', {id: book.id}) }}"
+                              style="display:inline;"
+                              data-confirm="Are you sure you want to permanently delete this book and all its data?"
+                              data-confirm-title="Delete Book"
+                              data-confirm-action="delete">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    {% elseif userBook is not null %}
+                        {% if userBook.status == 'finished' %}
+                            <div class="d-inline-block" data-bs-toggle="tooltip" title="You have already finished this book">
+                                <button class="btn btn-secondary" disabled>Edit Status</button>
+                            </div>
+                            <form method="post"
+                                  action="{{ path('book_remove', {id: book.id}) }}"
+                                  style="display:inline;"
+                                  data-confirm="Are you sure you want to remove this book from your library?"
+                                  data-confirm-title="Remove from Library"
+                                  data-confirm-action="remove">
+                                <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
+                                <button class="btn btn-warning">Remove from Library</button>
+                            </form>
+                        {% else %}
+                            <a class="btn btn-info" href="{{ path('book_edit', {'id': book.id}) }}">Edit Status</a>
+                            <form method="post"
+                                  action="{{ path('book_remove', {id: book.id}) }}"
+                                  style="display:inline;"
+                                  data-confirm="Are you sure you want to remove this book from your library?"
+                                  data-confirm-title="Remove from Library"
+                                  data-confirm-action="remove">
+                                <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
+                                <button class="btn btn-warning">Remove from Library</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-flex gap-2 mt-3">
+        <a class="btn btn-primary" href="{{ path('book_new') }}">Create New Book</a>
+        <a class="btn btn-secondary" href="{{ path('book_index') }}">See All Books</a>
+    </div>
+{% endblock %}
