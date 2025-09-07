@@ -24,6 +24,7 @@ class ReviewType extends AbstractType
             ->add('rating', HiddenType::class)
             ->add('content', TextareaType::class, [
                 'label' => 'Content',
+                'attr' => ['class' => 'form-control'],
             ]);
         $builder->get('rating')
             ->addModelTransformer(new CallbackTransformer(
