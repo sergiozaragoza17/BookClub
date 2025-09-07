@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\Review;
 use App\Entity\User;
 use App\Entity\UserBook;
 use App\Form\BookType;
+use App\Form\ReviewType;
 use App\Form\UserBookType;
 use App\Repository\BookRepository;
 use App\Repository\ClubBookRepository;
@@ -136,8 +138,12 @@ class BookController extends AbstractController
     }
 
     #[Route('/{id}', name: 'book_show', methods: ['GET'])]
-    public function show(Book $book,  UserBookRepository $userBookRepository, ClubRepository $clubRepository, ClubBookRepository $clubBookRepository): Response
-    {
+    public function show(
+        Book $book,
+        UserBookRepository $userBookRepository,
+        ClubRepository $clubRepository,
+        ClubBookRepository $clubBookRepository
+    ): Response {
         $user = $this->getUser();
         $userBook = $userBookRepository->findOneBy([
             'user' => $user,
@@ -154,12 +160,51 @@ class BookController extends AbstractController
             }
         }
 
+        $review = new Review();
+        $review->setBook($book);
+        $review->setUser($user);
+
+        $reviewForm = $this->createForm(ReviewType::class, $review, [
+            'action' => $this->generateUrl('review_new', ['book' => $book->getId()])
+        ]);
+
+        $editForms = [];
+        foreach ($reviews as $reviewItem) {
+            if ($reviewItem->getUser() === $user) {
+                $editForm = $this->createForm(ReviewType::class, $reviewItem, [
+                    'action' => $this->generateUrl('review_edit', ['id' => $reviewItem->getId()]),
+                    'is_admin' => $this->isGranted('ROLE_ADMIN'),
+                ]);
+
+                if ($reviewItem->getStatus() === 'approved') {
+                    $editForm->remove('status');
+                }
+
+                $editForms[$reviewItem->getId()] = $editForm->createView();
+            }
+        }
+
+        $clubReviewForms = [];
+        foreach ($validClubs as $club) {
+            $clubReview = new Review();
+            $clubReview->setBook($book);
+            $clubReview->setUser($user);
+            $clubReview->setClub($club);
+
+            $clubReviewForms[$club->getId()] = $this->createForm(ReviewType::class, $clubReview, [
+                'action' => $this->generateUrl('review_new_club', ['book' => $book->getId(), 'club' => $club->getId()]),
+            ])->createView();
+        }
+
         return $this->render('book/show.html.twig', [
             'book' => $book,
             'userBook' => $userBook,
             'reviews' => $reviews,
             'user' => $user,
             'validClubs' => $validClubs,
+            'reviewForm' => $reviewForm->createView(),
+            'editForms' => $editForms,
+            'clubReviewForms' => $clubReviewForms,
         ]);
     }
 

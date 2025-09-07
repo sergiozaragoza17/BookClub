@@ -1,0 +1,73 @@
+<div class="modal fade" id="clubReviewModal{{ club.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Write a Club Review for {{ book.title }} - {{ club.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ form_start(clubReviewForm, {'attr': {'id': 'club-review-form-' ~ club.id}}) }}
+
+                {{ form_row(clubReviewForm.content) }}
+
+                <div class="mb-3">
+                    <label class="form-label">Rating</label>
+                    {{ form_widget(clubReviewForm.rating, { 'attr': { 'id': 'review_rating', 'class': 'd-none' } }) }}
+                    <div id="star-container" class="mb-3">
+                        {% for i in 1..5 %}
+                            <i class="bi bi-star fs-3 text-secondary star" data-value="{{ i }}" style="cursor: pointer;"></i>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {{ form_rest(clubReviewForm) }}
+
+                <button type="submit" class="btn btn-success">Save changes</button>
+                {{ form_end(clubReviewForm) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('clubReviewModal{{ club.id }}');
+
+        modalEl.addEventListener('shown.bs.modal', function () {
+            const stars = modalEl.querySelectorAll('.star');
+            const ratingInput = modalEl.querySelector('input[type="hidden"][name$="[rating]"]');
+            if (!stars.length || !ratingInput) return;
+
+            let currentRating = parseInt(ratingInput.value) || 0;
+
+            const highlightStars = (rating) => {
+                stars.forEach(star => {
+                    const value = parseInt(star.dataset.value);
+                    if (value <= rating) {
+                        star.classList.remove('text-secondary', 'bi-star');
+                        star.classList.add('text-warning', 'bi-star-fill');
+                    } else {
+                        star.classList.remove('text-warning', 'bi-star-fill');
+                        star.classList.add('text-secondary', 'bi-star');
+                    }
+                });
+            };
+
+            highlightStars(currentRating);
+
+            stars.forEach(star => {
+                star.addEventListener('click', function () {
+                    currentRating = parseInt(this.dataset.value);
+                    ratingInput.value = currentRating;
+                    highlightStars(currentRating);
+                });
+                star.addEventListener('mouseover', function () {
+                    highlightStars(parseInt(this.dataset.value));
+                });
+                star.addEventListener('mouseout', function () {
+                    highlightStars(currentRating);
+                });
+            });
+        });
+    });
+</script>

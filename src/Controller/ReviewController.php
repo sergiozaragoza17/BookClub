@@ -50,13 +50,7 @@ class ReviewController extends AbstractController
             $this->addFlash('success', 'Your review has been submitted and is pending approval.');
             return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
         }
-
-        return $this->renderForm('review/new.html.twig', [
-            'review' => $review,
-            'form' => $form,
-            'book' => $book,
-            'club' => null,
-        ]);
+        return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
     }
 
     #[Route('/{book}/new/club/{club}', name: 'review_new_club', methods: ['GET', 'POST'])]
@@ -70,7 +64,6 @@ class ReviewController extends AbstractController
         UserBookRepository $userBookRepository
     ): Response
     {
-        VarDumper::dump($request->request->all());
         $user = $this->getUser();
 
         if (!$club->getMembers()->contains($user) || !$clubBookRepository->findOneBy(['club' => $club, 'book' => $book])) {
@@ -103,13 +96,7 @@ class ReviewController extends AbstractController
             $this->addFlash('success', 'Your club review has been submitted and is pending approval.');
             return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
         }
-
-        return $this->renderForm('review/new.html.twig', [
-            'review' => $review,
-            'form' => $form,
-            'book' => $book,
-            'club' => $club,
-        ]);
+        return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
     }
 
     #[Route('/{id}', name: 'review_show', methods: ['GET'])]
@@ -149,12 +136,7 @@ class ReviewController extends AbstractController
                 return $this->redirectToRoute('book_show', ['id' => $review->getBook()->getId()], Response::HTTP_SEE_OTHER);
             }
         }
-
-        return $this->renderForm('review/edit.html.twig', [
-            'review' => $review,
-            'form' => $form,
-            'club' => $review->getClub() ?? null,
-        ]);
+        return $this->redirectToRoute('book_show', ['id' => $review->getBook()->getId()]);
     }
 
     #[Route('/{id}', name: 'review_delete', methods: ['POST'])]

@@ -9,8 +9,6 @@
 
         {% if book.coverImage %}
             <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="img-thumbnail" width="150">
-            {#    {% else %}#}
-            {#        <img src="/images/default-profile.png" alt="Default Profile" class="img-thumbnail" width="150">#}
         {% endif %}
         <p><strong>Author:</strong> {{ book.author ?? 'Not set' }}</p>
         <p><strong>Description:</strong>
@@ -18,7 +16,7 @@
         <p><strong>Published year:</strong> {{ book.publishedYear ?? 'Not set' }}</p>
         <p><strong>Genre:</strong> {{ book.genre.name ?? 'Not set' }}</p>
         {% if userBook is not null %}
-        <p><strong>Status:</strong> {{ userBook.status ?? 'Not set' }}</p>
+            <p><strong>Status:</strong> {{ userBook.status ?? 'Not set' }}</p>
         {% endif %}
         <hr>
         <p><b>Reviews:</b></p>
@@ -28,7 +26,7 @@
 
             <div class="row g-3">
                 {% for review in reviews %}
-                    {% if is_granted('ROLE_ADMIN') or review.status == 'approved' or (review.status in ['pending','rejected'] and user.id == review.user.id)%}
+                    {% if is_granted('ROLE_ADMIN') or review.status == 'approved' or (review.status in ['pending','rejected'] and user.id == review.user.id) %}
                         {% if is_granted('ROLE_ADMIN') or (not review.club or review.club.members.contains(user)) %}
                             <div class="col-md-4">
                                 <div class="card review-card {% if review.club %} border border-warning {% endif %} {% if review.status == 'pending' %}bg-light text-dark{% elseif review.status == 'rejected' %}bg-danger bg-opacity-25 text-dark{% endif %}">
@@ -50,7 +48,7 @@
                                             {% if review.club %}club: {{ review.club.name }}{% endif %}
                                         </h6>
                                         {% if review.content|length > 100 %}
-                                        <p class="card-text">{{ review.content|slice(0, 100) ~ '...' }}</p>
+                                            <p class="card-text">{{ review.content|slice(0, 100) ~ '...' }}</p>
                                             {# TODO poner boton de ver completa en reviews de book show #}
                                         {% else %}
                                             {{ review.content }}
@@ -67,10 +65,12 @@
 
                                         {% if is_granted('ROLE_ADMIN') %}
                                             {% if review.status != 'approved' %}
-                                                <a class="btn btn-sm btn-success" href="{{ path('admin_review_approve', {'id': review.id, 'redirect': 'book_show'}) }}">Approve</a>
+                                                <a class="btn btn-sm btn-success"
+                                                   href="{{ path('admin_review_approve', {'id': review.id, 'redirect': 'book_show'}) }}">Approve</a>
                                             {% endif %}
                                             {% if review.status != 'rejected' %}
-                                                <a class="btn btn-sm btn-warning" href="{{ path('admin_review_reject', {'id': review.id, 'redirect': 'book_show'}) }}">Reject</a>
+                                                <a class="btn btn-sm btn-warning"
+                                                   href="{{ path('admin_review_reject', {'id': review.id, 'redirect': 'book_show'}) }}">Reject</a>
                                             {% endif %}
                                             <form method="post"
                                                   action="{{ path('admin_review_delete', {id: review.id}) }}"
@@ -78,18 +78,23 @@
                                                   data-confirm="Are you sure you want to delete this review?"
                                                   data-confirm-title="Delete"
                                                   data-confirm-action="delete">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
+                                                <input type="hidden" name="_token"
+                                                       value="{{ csrf_token('delete' ~ review.id) }}">
                                                 <button class="btn btn-sm btn-danger">Delete</button>
                                             </form>
                                         {% elseif user.id == review.user.id %}
-                                            <a class="btn btn-sm btn-info" href="{{ path('review_edit', {'id': review.id}) }}">Edit Review</a>
+                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal"
+                                                    data-bs-target="#editReviewModal{{ review.id }}">
+                                                Edit Review
+                                            </button>
                                             <form method="post"
                                                   action="{{ path('review_delete', {id: review.id}) }}"
                                                   style="display:inline;"
                                                   data-confirm="Are you sure you want to delete this review?"
                                                   data-confirm-title="Delete"
                                                   data-confirm-action="delete">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
+                                                <input type="hidden" name="_token"
+                                                       value="{{ csrf_token('delete' ~ review.id) }}">
                                                 <button class="btn btn-sm btn-danger">Delete Review</button>
                                             </form>
                                         {% endif %}
@@ -153,66 +158,58 @@
                     </div>
 
                 {% else %}
-                    <a class="btn btn-info" href="{{ path('review_new', {'book': book.id}) }}">
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#reviewModal">
                         Write a review
-                    </a>
+                    </button>
                 {% endif %}
 
-                {# CLUB REVIEWS #}
-
-                {% set hasClubForThisBook = validClubs is defined and validClubs|length > 0 %}{% if hasClubForThisBook %}
-                {% if userBook is null %}
-                    <div class="d-inline-block" data-bs-toggle="tooltip" title="Add the book to your library first">
-                        <button class="btn btn-secondary" disabled>
+                {% set hasClubForThisBook = validClubs is defined and validClubs|length > 0 %}
+                {% if hasClubForThisBook %}
+                    {% if userBook is null %}
+                        <div class="d-inline-block" data-bs-toggle="tooltip" title="Add the book to your library first">
+                            <button class="btn btn-secondary" disabled>
+                                Write a club review
+                            </button>
+                        </div>
+                    {% elseif userBook.status != 'finished' %}
+                        <div class="d-inline-block" data-bs-toggle="tooltip" title="Mark the book as finished to review">
+                            <button class="btn btn-secondary" disabled>
+                                Write a club review
+                            </button>
+                        </div>
+                    {% elseif validClubs|length == 1 %}
+                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clubReviewModal{{ validClubs[0].id }}">
                             Write a club review
                         </button>
-                    </div>
-
-                {% elseif userBook.status != 'finished' %}
-                    <div class="d-inline-block" data-bs-toggle="tooltip" title="Mark the book as finished to review">
-                        <button class="btn btn-secondary" disabled>
+                    {% else %}
+                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clubReviewModal">
                             Write a club review
                         </button>
-                    </div>
 
-                {% elseif validClubs|length == 1 %}
-                    {# un único club válido → link directo #}
-                    <a class="btn btn-warning"
-                       href="{{ path('review_new_club', {'book': book.id, 'club': validClubs[0].id}) }}">
-{#                       href="#">#}
-                        Write a club review
-                    </a>
-
-                {% else %}
-                    {# varios clubs válidos → abre modal para elegir #}
-                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#clubReviewModal">
-                        Write a club review
-                    </button>
-
-                    <div class="modal fade" id="clubReviewModal" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Choose a club</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <select id="clubSelect" class="form-select">
-                                        <option value="" selected disabled>Select a club</option>
-                                        {% for club in validClubs %}
-                                            <option value="{{ club.id }}">{{ club.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="continueClubReview">Continue</button>
+                        <div class="modal fade" id="clubReviewModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Choose a club</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <select id="clubSelect" class="form-select">
+                                            <option value="" selected disabled>Select a club</option>
+                                            {% for club in validClubs %}
+                                                <option value="{{ club.id }}">{{ club.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" id="continueClubReview">Continue
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-
             {% endif %}
         </div>
         <div>
@@ -226,7 +223,6 @@
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
                     <button class="btn btn-danger">Delete Book</button>
                 </form>
-
             {% elseif userBook %}
                 <form method="post"
                       action="{{ path('book_remove', {id: book.id}) }}"
@@ -237,23 +233,53 @@
                     <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
                     <button class="btn btn-warning">Remove from Library</button>
                 </form>
-
             {% endif %}
         </div>
-
     </div>
+    {% include 'review/_new_review_modal.html.twig' with {
+        'book': book,
+    } %}
+    {% for review in reviews %}
+        {% if user.id == review.user.id and editForms[review.id] is defined %}
+            {% include 'review/_edit_review_modal.html.twig' with {
+                'review': review,
+                'book': book,
+                'editForm': editForms[review.id]
+            } %}
+        {% endif %}
+    {% endfor %}
+
+    {% for club in validClubs %}
+        {% include 'review/_new_club_review_modal.html.twig' with {
+            'book': book,
+            'club': club,
+            'clubReviewForm': clubReviewForms[club.id],
+        } %}
+    {% endfor %}
+
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script>
 
-        document.getElementById('continueClubReview').addEventListener('click', function() {
-            const clubId = document.getElementById('clubSelect').value;
-            if(!clubId) {
-                alert('Please select a club');
-                return;
+        document.addEventListener('DOMContentLoaded', function () {
+            const continueClubReview = document.getElementById('continueClubReview');
+            if (continueClubReview) {
+                continueClubReview.addEventListener('click', function () {
+                    const clubId = document.getElementById('clubSelect').value;
+                    if (!clubId) {
+                        alert('Please select a club');
+                        return;
+                    }
+                    const modalId = `clubReviewModal${clubId}`;
+                    const modal = new bootstrap.Modal(document.getElementById(modalId));
+                    modal.show();
+
+                    const selectModal = bootstrap.Modal.getInstance(document.getElementById('clubReviewModal'));
+                    selectModal.hide();
+                });
             }
-            window.location.href = '{{ path("review_new_club", {"book": book.id, "club": "CLUBID"}) }}'.replace('CLUBID', clubId);
         });
     </script>
 {% endblock %}
+

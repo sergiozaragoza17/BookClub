@@ -1,0 +1,72 @@
+<div class="modal fade" id="editReviewModal{{ review.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Review for {{ book.title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ form_start(editForm, {'attr': {'id': 'edit-review-form-' ~ review.id}}) }}
+                {{ form_row(editForm.content) }}
+
+                <div class="mb-3">
+                    <label>Rating</label>
+                    {{ form_widget(editForm.rating, {
+                        'id': 'review_rating_' ~ review.id,
+                        'value': editForm.rating.vars.value
+                    }) }}
+                    <div id="star-container-{{ review.id }}">
+                        {% for i in 1..5 %}
+                            <i class="bi fs-3 star {% if i <= editForm.rating.vars.value %} bi-star-fill text-warning {% else %} bi-star text-secondary {% endif %}" data-value="{{ i }}"></i>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {{ form_rest(editForm) }}
+                <button type="submit" class="btn btn-success">Save changes</button>
+                {{ form_end(editForm) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[id^="star-container-"]').forEach(container => {
+            const reviewId = container.id.replace('star-container-', '');
+            const stars = container.querySelectorAll('.star');
+            const ratingInput = document.getElementById('review_rating_' + reviewId);
+
+            let currentRating = parseInt(ratingInput.value) || 0;
+
+            const highlightStars = (rating) => {
+                stars.forEach(star => {
+                    const value = parseInt(star.dataset.value);
+                    if (value <= rating) {
+                        star.classList.remove('text-secondary', 'bi-star');
+                        star.classList.add('text-warning', 'bi-star-fill');
+                    } else {
+                        star.classList.remove('text-warning', 'bi-star-fill');
+                        star.classList.add('text-secondary', 'bi-star');
+                    }
+                });
+            };
+
+            highlightStars(currentRating);
+
+            stars.forEach(star => {
+                star.addEventListener('mouseover', () => {
+                    highlightStars(parseInt(star.dataset.value));
+                });
+                star.addEventListener('mouseout', () => {
+                    highlightStars(currentRating);
+                });
+                star.addEventListener('click', () => {
+                    currentRating = parseInt(star.dataset.value);
+                    ratingInput.value = currentRating;
+                    highlightStars(currentRating);
+                });
+            });
+        });
+    });
+</script>
