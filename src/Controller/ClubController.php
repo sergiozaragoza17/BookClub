@@ -223,9 +223,9 @@ class ClubController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$club->getMembers()->contains($user)) {
+        if (!$this->isGranted('ROLE_ADMIN') && !$club->getMembers()->contains($user)) {
             $this->addFlash('warning', 'You must be a member of this club to view the forum.');
-            return $this->redirectToRoute('book_show', ['id' => $club->getClubBooks()->first()?->getBook()?->getId()]);
+            return $this->redirectToRoute('club_show', ['id' => $club->getClubBooks()->first()?->getBook()?->getId()]);
         }
 
         $post = new ClubPost();
@@ -279,9 +279,9 @@ class ClubController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (!$club->getMembers()->contains($user)) {
+        if (!$this->isGranted('ROLE_ADMIN') && !$club->getMembers()->contains($user)) {
             $this->addFlash('warning', 'You must be a member of this club to view the forum.');
-            return $this->redirectToRoute('book_show', ['id' => $club->getClubBooks()->first()?->getBook()?->getId()]);
+            return $this->redirectToRoute('club_show', ['id' => $club->getClubBooks()->first()?->getBook()?->getId()]);
         }
 
         $post = new ClubBookPost();
