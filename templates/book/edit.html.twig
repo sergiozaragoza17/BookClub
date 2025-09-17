@@ -3,41 +3,107 @@
 {% block title %}Edit Book{% endblock %}
 
 {% block body %}
-    <h1>Edit Book</h1>
-    {% if is_granted('ROLE_ADMIN') %}
-        {{ form_start(form) }}
-        {{ form_row(form.coverImage) }}
-        {{ form_row(form.title) }}
-        {{ form_row(form.author) }}
-        {{ form_row(form.description) }}
-        {{ form_row(form.publishedYear) }}
-        <hr>
-        <button class="btn btn-success mt-3">Save changes</button>
+    <h1 class="mt-3 text-center">Edit Book</h1>
 
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="container mt-3 p-4 border rounded shadow-sm">
+        {{ form_start(form) }}
+            <div class="row p-3 text-center">
+                <div class="col-2">{{ form_label(form.coverImage) }}</div>
+                <div class="col-10">{{ form_widget(form.coverImage, { attr: { class: 'form-control' } }) }}</div>
+                {% for error in form.coverImage.vars.errors %}
+                    <div class="col-12 text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+            <div class="row p-3 text-center">
+                <div class="col-2">{{ form_label(form.title) }}</div>
+                <div class="col-10">{{ form_widget(form.title, { attr: { class: 'form-control' } }) }}</div>
+                {% for error in form.title.vars.errors %}
+                    <div class="col-12 text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+            <div class="row p-3 text-center">
+                <div class="col-2">{{ form_label(form.author) }}</div>
+                <div class="col-10">{{ form_widget(form.author, { attr: { class: 'form-control' } }) }}</div>
+                {% for error in form.author.vars.errors %}
+                    <div class="col-12 text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+            <div class="row p-3 text-center">
+                <div class="col-2">{{ form_label(form.description) }}</div>
+                <div class="col-10">{{ form_widget(form.description, { attr: { class: 'form-control auto-grow' } }) }}</div>
+                {% for error in form.description.vars.errors %}
+                    <div class="col-12 text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+            <div class="row p-3 text-center">
+                <div class="col-2">{{ form_label(form.publishedYear) }}</div>
+                <div class="col-10">{{ form_widget(form.publishedYear, { attr: { class: 'form-control' } }) }}</div>
+                {% for error in form.publishedYear.vars.errors %}
+                    <div class="col-12 text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+            <div class="row p-3 text-center">
+                <div class="col-2">{{ form_label(form.genre) }}</div>
+                <div class="col-10">{{ form_widget(form.genre, { attr: { class: 'form-control' } }) }}</div>
+                {% for error in form.genre.vars.errors %}
+                    <div class="col-12 text-danger">{{ error.message }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="container d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-success">Save changes</button>
+            <a class="btn btn-secondary" href="{{ path('book_index') }}">Back to list</a>
+        </div>
         {{ form_end(form) }}
-        <a class="btn btn-info mt-3" href="{{ path('book_index') }}">back to list</a>
     {% else %}
+<div class="container mt-3 p-3">
         {{ form_start(formBook) }}
-        {% if book.coverImage %}
-            <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="img-thumbnail" width="150">
-        {% endif %}
-        <p><strong>Title:</strong> {{ book.title }}</p>
-        <p><strong>Author:</strong> {{ book.author ?? 'Not set' }}</p>
-        <p><strong>Description:</strong> {{ book.description ?? 'Not set' }}</p>
-        <p><strong>Published year:</strong> {{ book.publishedYear ?? 'Not set' }}</p>
-        <p><strong>Status:</strong>
-            {% if formBook.status.vars.value == 'finished' %}
-                {{ form_widget(formBook.status, { 'attr': {'class': 'form-control', 'disabled': 'disabled'} }) }}
-            {% else %}
-                {{ form_widget(formBook.status, { 'attr': {'class': 'form-control'} }) }}
-            {% endif %}
-        </p>
-        <hr>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="text-center mb-3">
+                {% if book.coverImage %}
+                    <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="img-thumbnail" width="150">
+                {% endif %}
+            </div>
+
+            <h2 class="card-title text-center mb-3">{{ book.title }}</h2>
+
+            <div class="row mb-2">
+                <div class="col-sm-3"><strong>Author:</strong></div>
+                <div class="col-sm-9">{{ book.author ?? 'Not set' }}</div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-3"><strong>Description:</strong></div>
+                <div class="col-sm-9">{{ book.description ?? 'Not set' }}</div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-3"><strong>Published year:</strong></div>
+                <div class="col-sm-9">{{ book.publishedYear ?? 'Not set' }}</div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-3"><strong>Status:</strong></div>
+                <div class="col-sm-9">
+                    {% if formBook.status.vars.value == 'finished' %}
+                        <span class="badge bg-success">Finished</span>
+                    {% else %}
+                        {{ form_widget(formBook.status, { 'attr': {'class': 'form-control'} }) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mb-3 d-flex justify-content-between align-items-center">
         {% if formBook.status.vars.value != 'finished' %}
-        <button class="btn btn-success mt-3">Save changes</button>
+        <button class="btn btn-success">Save changes</button>
         {% endif %}
         {{ form_end(formBook) }}
-        <a class="btn btn-info mt-3" href="{{ path('book_index') }}">back to list</a>
+        <a class="btn btn-info" href="{{ path('book_index') }}">back to list</a>
+</div>
     {% endif %}
 
 

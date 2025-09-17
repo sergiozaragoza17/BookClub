@@ -44,13 +44,13 @@
             {% endfor %}
         </div>
     </div>
-    <div class="d-flex justify-content-between gap-2 mt-3">
-        <div class="firstButtonBlock ms-5">
+    <div class="container mt-3 mb-3 d-flex justify-content-between align-items-center">
+        <div class="firstButtonBlock">
             <button class="btn btn-outline-info" onclick="window.history.back();">Back</button>
             <a class="btn btn-outline-warning" href="{{ path('club_forum', {'club' : club.id}) }}">general forum</a>
             <a class="btn btn-info" href="{{ path('club_add_book', {'id' : club.id}) }}">add books</a>
         </div>
-        <div class="secondButtonBlock d-flex gap-2 me-5">
+        <div class="secondButtonBlock d-flex gap-2 ">
 
             {% if app.user %}
                 {% if club.members.contains(app.user) %}

@@ -50,7 +50,7 @@ class Book
         $this->reviews = new ArrayCollection();
         $this->userBooks = new ArrayCollection();
         $this->created = new \DateTimeImmutable();
-        $this->bookPosts = new \DateTimeImmutable();
+        $this->bookPosts = new ArrayCollection();
     }
 
     public function getId(): ?int

@@ -51,5 +51,7 @@
             {% endfor %}
         </div>
     </div>
-    <a class="btn btn-info ms-5 mt-3 mb-3" href="{{ path('club_show',{'id': club.id}) }}">back to club</a>
+    <div class="container mt-3 mb-3 d-flex justify-content-between align-items-center">
+    <a class="btn btn-info" href="{{ path('club_show',{'id': club.id}) }}">back to club</a>
+    </div>
 {% endblock %}

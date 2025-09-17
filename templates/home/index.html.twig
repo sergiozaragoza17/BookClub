@@ -79,7 +79,7 @@
                                     {% for book in bookGroup %}
                                         <div class="card mx-2">
                                             <a href="{{ path('book_show', {'id': book.id}) }}">
-                                                <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="book-cover card-img-top" >
+                                                <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="book-cover card-img-top mt-2" >
                                             </a>
                                             <div class="card-body p-2 text-center">
                                                 <h6 class="card-title book-card-title">{{ book.title }}</h6>
@@ -118,7 +118,7 @@
                         <div class="col-4">
                             <div class="card text-center">
                                 <a href="{{ path('book_show', {'id': book.id}) }}">
-                                    <img src="{{ book.coverImage }}" class="book-cover card-img-top">
+                                    <img src="{{ book.coverImage }}" class="book-cover card-img-top mt-2">
                                 </a>
                                 <div class="card-body">
                                     <h6>{{ book.title }}</h6>

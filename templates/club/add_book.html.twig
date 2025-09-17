@@ -14,5 +14,7 @@
     <button class="btn btn-primary">Add Book</button>
     {{ form_end(form) }}
     </div>
-    <a class="btn btn-secondary mt-3 ms-5" href="{{ path('club_show', {'id': club.id}) }}">Back to club</a>
+    <div class="container mt-3 mb-3 d-flex justify-content-between align-items-center">
+    <a class="btn btn-secondary" href="{{ path('club_show', {'id': club.id}) }}">Back to club</a>
+    </div>
 {% endblock %}

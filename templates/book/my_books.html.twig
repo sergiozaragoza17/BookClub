@@ -3,16 +3,16 @@
 {% block title %}My Books{% endblock %}
 
 {% block body %}
-    <h1 class="mb-4">My Books</h1>
+    <h1 class="mt-3 text-center">My Books</h1>
 
-    <div class="container">
+    <div class="container border p-3">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
             {% for userBook in pagination %}
                 {% set book = userBook.book %}
                 <div class="col">
                     <div class="card h-100 shadow-sm">
                         <a href="{{ path('book_show', {'id': book.id, 'fromList': 1}) }}">
-                            <img src="{{ book.coverImage }}" class="card-img-top book-cover" alt="{{ book.title }}">
+                            <img src="{{ book.coverImage }}" class="card-img-top book-cover mt-2" alt="{{ book.title }}">
                         </a>
                         <div class="card-body p-2">
                             <h6 class="card-title text-truncate" title="{{ book.title }}">{{ book.title }}</h6>
@@ -39,14 +39,15 @@
             {% else %}
                 <p>No books found in your library.</p>
             {% endfor %}
+
+        </div>
+        {% import 'pagination/pagination_cards.html.twig' as cards %}
+        <div class="d-flex justify-content-center mt-4">
+            {{ cards.render(pagination) }}
         </div>
     </div>
 
-    <div class="d-flex justify-content-center mt-4">
-        {{ knp_pagination_render(pagination, 'pagination/pagination_cards.html.twig') }}
-    </div>
-
-    <div class="d-flex gap-2 mt-3">
+    <div class="container mt-3 mb-3 d-flex justify-content-between align-items-center">
         <a class="btn btn-primary" href="{{ path('book_new') }}">Create New Book</a>
         <a class="btn btn-secondary" href="{{ path('book_index') }}">See All Books</a>
     </div>
