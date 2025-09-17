@@ -167,6 +167,35 @@ class ClubController extends AbstractController
         ]);
     }
 
+    #[Route('/club/{club}/remove-book/{book}', name: 'club_book_remove', methods: ['POST'])]
+    public function removeBook(Club $club, Book $book, ClubBookRepository $clubBookRepository, EntityManagerInterface $em, Request $request): Response
+    {
+        $user = $this->getUser();
+
+        if (!$this->isGranted('ROLE_ADMIN') && $club->getCreatedBy() !== $user) {
+            $this->addFlash('warning', 'Only the club creator or an admin can remove a book.');
+            return $this->redirectToRoute('club_show', ['id' => $club->getId()]);
+        }
+
+        $clubBook = $clubBookRepository->findOneBy([
+            'club' => $club,
+            'book' => $book,
+        ]);
+
+        if (!$clubBook) {
+            $this->addFlash('danger', 'Book not found in this club.');
+            return $this->redirectToRoute('club_show', ['id' => $club->getId()]);
+        }
+
+        if ($this->isCsrfTokenValid('remove_book' . $clubBook->getId(), $request->request->get('_token'))) {
+            $em->remove($clubBook);
+            $em->flush();
+            $this->addFlash('success', 'Book removed from the club.');
+        }
+
+        return $this->redirectToRoute('club_show', ['id' => $club->getId()]);
+    }
+
     #[Route('/{id}', name: 'club_delete', methods: ['POST'])]
     public function delete(Request $request, Club $club, EntityManagerInterface $entityManager): Response
     {

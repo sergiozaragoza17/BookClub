@@ -16,7 +16,20 @@
                 </a>
                 <div class="card-body p-2" style="width: 300px;">
                     <h5 class="card-title book-card-title">{{ clubBook.book.title }}</h5>
-                    <a class="btn btn-outline-warning btn-sm" href="{{ path('club_book_forum', {'book': clubBook.book.id, 'club' : clubBook.club.id}) }}">Forum</a>
+                    <div class="mt-2 d-flex justify-content-between">
+                        <a class="btn btn-outline-warning btn-sm" href="{{ path('club_book_forum', {'book': clubBook.book.id, 'club' : clubBook.club.id}) }}">Forum</a>
+                        {% if club.createdBy == app.user or is_granted('ROLE_ADMIN') %}
+                            <form method="post"
+                                  action="{{ path('club_book_remove', {'book': clubBook.book.id, 'club' : clubBook.club.id}) }}"
+                                  style="display:inline;"
+                                  data-confirm="Are you sure you want to remove {{ clubBook.book.title|e('html_attr') }} from this club?"
+                                  data-confirm-title="Remove from club"
+                                  data-confirm-action="delete">
+                                <input type="hidden" name="_token" value="{{ csrf_token('remove_book' ~ clubBook.id) }}">
+                                <button class="btn btn-outline-danger btn-sm">Remove Book</button>
+                            </form>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         {% else %}
