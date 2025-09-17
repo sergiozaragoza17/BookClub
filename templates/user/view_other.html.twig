@@ -3,18 +3,40 @@
 {% block title %}{{ user.name }}'s Profile{% endblock %}
 
 {% block body %}
-    <h1>{{ user.userName }}'s Profile</h1>
-
-    <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="img-thumbnail profile-img">
-    <p><strong>Bio:</strong> {{ user.bio ?? 'Not set' }}</p>
-    <p><strong>Fav. Book:</strong> {{ user.favBook ?? 'Not set' }}</p>
-    <p><strong>Currently Reading:</strong> {{ user.currentlyReading ?? 'Not set' }}</p>
-    <p><strong>Fav. Genres:</strong>  {{ user.favGenres|join(', ') }} </p>
-    <p><strong>Joined at:</strong>  {{ user.joinedAt|date }} </p>
-    <p><strong>Total Reviews Written</strong>  {{ totalReviews }} </p>
-
-    <hr>
-
-    <button class="btn btn-secondary" onclick="window.history.back();">Back</button>
-    <a class="btn btn-primary" href="{{ path('user_library', {'id': user.id}) }}" class="btn btn-link mt-2">View {{ user.username }}'s library</a>
+    <h1 class="mt-3 text-center">{{ user.userName }}'s Profile</h1>
+    <div class="container mt-3 p-4">
+        <div class="card shadow-sm p-4">
+            <div class="text-center mb-4">
+                <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="rounded-circle img-thumbnail"  style="width: 150px; height: 150px; object-fit: cover;">
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Bio:</div>
+                <div class="col-sm-8 ">{{ user.bio ?? 'Not set' }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Fav. Book:</div>
+                <div class="col-sm-8 ">{{ user.favBook ?? 'Not set' }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Currently Reading:</div>
+                <div class="col-sm-8 ">{{ user.currentlyReading ?? 'Not set' }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Fav. Genres:</div>
+                <div class="col-sm-8 ">{{ user.favGenres|join(', ') }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Joined at:</div>
+                <div class="col-sm-8 ">{{ user.joinedAt|date }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Total Reviews Written:</div>
+                <div class="col-sm-8 ">{{ totalReviews }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="container mb-3 d-flex justify-content-between align-items-center mt-3">
+        <button class="btn btn-secondary" onclick="window.history.back();">Back</button>
+        <a class="btn btn-primary" href="{{ path('user_library', {'id': user.id}) }}" class="btn btn-link mt-2">View {{ user.username }}'s library</a>
+    </div>
 {% endblock %}

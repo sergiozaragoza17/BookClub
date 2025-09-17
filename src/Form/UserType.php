@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Book;
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -32,13 +34,41 @@ class UserType extends AbstractType
                 'label' => 'Bio',
                 'required' => false,
             ])
-            ->add('favBook', TextType::class, [
+            ->add('favBook', EntityType::class, [
+                'class' => Book::class,
+                'choice_label' => 'title',
+                'multiple' => false,
+                'expanded' => false,
+                'query_builder' => function (\App\Repository\BookRepository $repo) use ($options) {
+                    $user = $options['user'];
+                    return $repo->createQueryBuilder('b')
+                        ->join('b.userBooks', 'ub')
+                        ->where('ub.user = :user')
+                        ->andWhere('ub.status = :status')
+                        ->setParameter('user', $user)
+                        ->setParameter('status', 'finished');
+                },
                 'required' => false,
-                'label' => 'Favorite Book'
+                'placeholder' => 'Select a book',
+                'label' => 'Favorite Book',
             ])
-            ->add('currentlyReading', TextType::class, [
+            ->add('currentlyReading', EntityType::class, [
+                'class' => Book::class,
+                'choice_label' => 'title',
+                'multiple' => false,
+                'expanded' => false,
+                'query_builder' => function (\App\Repository\BookRepository $repo) use ($options) {
+                    $user = $options['user'];
+                    return $repo->createQueryBuilder('b')
+                        ->join('b.userBooks', 'ub')
+                        ->where('ub.user = :user')
+                        ->andWhere('ub.status = :status')
+                        ->setParameter('user', $user)
+                        ->setParameter('status', 'reading');
+                },
                 'required' => false,
-                'label' => 'Currently Reading'
+                'placeholder' => 'Select a book',
+                'label' => 'Currently Reading',
             ])
             ->add('favGenres', ChoiceType::class, [
                 'label' => 'Favorite Genres',
@@ -74,6 +104,7 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'user' => null,
         ]);
     }
 }
