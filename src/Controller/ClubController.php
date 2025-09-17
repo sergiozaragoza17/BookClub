@@ -242,7 +242,7 @@ class ClubController extends AbstractController
         return $this->redirectToRoute('club_show', ['id' => $club->getId()]);
     }
 
-    #[Route('/club/{club}/forum', name: 'club_forum')]
+    #[Route('/{club}/forum', name: 'club_forum')]
     public function clubForum(
         Club $club,
         ClubPostRepository $clubPostRepository,
@@ -297,7 +297,7 @@ class ClubController extends AbstractController
         ]);
     }
 
-    #[Route('/club/{club}/book/{book}/forum', name: 'club_book_forum')]
+    #[Route('/{club}/book/{book}/forum', name: 'club_book_forum')]
     public function clubBookForum(
         Club $club,
         Book $book,

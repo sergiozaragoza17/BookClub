@@ -3,9 +3,34 @@
 {% block title %}New Club{% endblock %}
 
 {% block body %}
-    <h1>Create new Club</h1>
+    <h1 class="mt-3 text-center">Create new Club</h1>
 
-    {{ include('club/_form.html.twig') }}
-
-    <a href="{{ path('club_index') }}">back to list</a>
+    <div class="container mt-3 p-3 border">
+        {{ form_start(form) }}
+        <div class="row p-3 text-center">
+            <div class="col-2">{{ form_label(form.name) }}</div>
+            <div class="col-10">{{ form_widget(form.name, { attr: { class: 'form-control' } }) }}</div>
+            {% for error in form.name.vars.errors %}
+                <div class="col-12 text-danger">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+        <div class="row p-3 text-center">
+            <div class="col-2">{{ form_label(form.description) }}</div>
+            <div class="col-10">{{ form_widget(form.description, { attr: { class: 'form-control' } }) }}</div>
+            {% for error in form.description.vars.errors %}
+                <div class="col-12 text-danger">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+        <div class="row p-3 text-center">
+            <div class="col-2">{{ form_label(form.genre) }}</div>
+            <div class="col-10">{{ form_widget(form.genre, { attr: { class: 'form-control' } }) }}</div>
+            {% for error in form.genre.vars.errors %}
+                <div class="col-12 text-danger">{{ error.message }}</div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-primary mt-3">Save</button>
+    </div>
+    <div class="buttons ms-5 mt-3">
+        <a class="btn btn-secondary " href="{{ path('club_index') }}">back to list</a>
+    </div>
 {% endblock %}
