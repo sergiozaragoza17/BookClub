@@ -22,7 +22,7 @@ class HomeController extends AbstractController
             12
         );
 
-        $books = $bookRepository->findBy([], ['created' => 'DESC'], 10);
+        $books = $bookRepository->findBy([], ['created' => 'DESC'], 9);
         $userBooksStatus = [];
         $currentUser = $this->getUser();
         foreach ($books as $book) {
