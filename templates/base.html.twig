@@ -27,13 +27,20 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 {% if app.user %}
+                    {% if not is_granted('ROLE_ADMIN') %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('my_books') }}">My Books</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('my_clubs') }}">My Clubs</a>
                     </li>
-                    {% if is_granted('ROLE_ADMIN') %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('book_index') }}">Books</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('club_index') }}">Clubs</a>
+                        </li>
                         <li><a class="nav-link" href="{{ path('admin_genre_new') }}">Genres</a></li>
                         <li><a class="nav-link" href="{{ path('admin_users') }}">Users</a></li>
                         <li><a class="nav-link" href="{{ path('admin_reviews', {'status': 'all'}) }}">Reviews</a></li>

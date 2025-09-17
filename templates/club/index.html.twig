@@ -24,7 +24,7 @@
                             {{ club.description|length > 100 ? club.description|slice(0, 100) ~ '...' : club.description }}
                         </p>
 
-                        {% if app.user %}
+                        {% if app.user and not is_granted('ROLE_ADMIN') %}
                             {% if club.members.contains(app.user) %}
                                 <form method="post" action="{{ path('club_leave', {id: club.id}) }}" class="mt-2">
                                     <input type="hidden" name="_token" value="{{ csrf_token('leave' ~ club.id) }}">
@@ -40,7 +40,7 @@
 
                         {% if club.createdBy == app.user or is_granted('ROLE_ADMIN') %}
                             <div class="mt-2 d-flex justify-content-between">
-                                <a href="{{ path('club_edit', {'id': club.id}) }}" class="btn btn-sm btn-info w-50 me-1">Edit</a>
+                                <a href="{{ path('club_edit', {'id': club.id}) }}" class="btn btn-info">Edit</a>
                                 {{ include('club/_delete_form.html.twig') }}
                             </div>
                         {% endif %}

@@ -33,9 +33,11 @@
                 <button type="submit" class="btn btn-danger">Leave club</button>
             </form>
         {% else %}
-            <form method="post" action="{{ path('club_join', {id: club.id}) }}">
-                <button type="submit" class="btn btn-success">Join club</button>
-            </form>
+            {% if not is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('club_join', {id: club.id}) }}">
+                    <button type="submit" class="btn btn-success">Join club</button>
+                </form>
+            {% endif %}
         {% endif %}
     {% endif %}
 </div>
