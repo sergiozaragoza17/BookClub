@@ -3,9 +3,8 @@
 {% block title %}Book{% endblock %}
 
 {% block body %}
+    <h1 class="mt-3 text-center">{{ book.title|capitalize }}</h1>
     <div class="container text-center" style="border: 1px solid black; border-radius: 10px; padding: 1%">
-        <h1>{{ book.title|capitalize }}</h1>
-        <hr>
 
         {% if book.coverImage %}
             <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="img-thumbnail" width="150">
