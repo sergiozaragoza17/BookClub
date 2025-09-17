@@ -3,164 +3,174 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <h1>{{ title }}</h1>
-    <p>Welcome to BookClub 📚 — a clean, intuitive platform to discover, track, and review your favorite books. Explore recent reviews, find your next read, and connect with fellow book lovers.</p>
+    <h1 class="mt-3 text-center">{{ title }}</h1>
+    <p class="mt-3 text-center">Welcome to BookClub 📚 — a clean, intuitive platform to discover, track, and review your favorite books. Explore recent reviews, find your next read, and connect with fellow book lovers.</p>
     <hr>
-    <h2>Reviews</h2>
-    <h2>Latest Reviews</h2>
-    {% if reviews %}
-        <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                {% for review in reviews|batch(3) %}
-                    <div class="carousel-item {% if loop.first %}active{% endif %}">
-                        <div class="d-flex justify-content-center">
-                            {% for r in review %}
-                                <div class="card mx-2" style="width: 30%;">
-                                    <div class="card-body">
-                                        <h6 class="card-subtitle mb-2 text-muted">
-                                            {% if r.user.id != app.user.id %}
-                                                <a href="{{ path('user_profile', {'id': r.user.id}) }}">{{ r.user.userName }}</a>
-                                            {% else %}
-                                                {{ r.user.userName }}
-                                            {% endif %}
-                                            on
-                                            <a href="{{ path('book_show', {'id': r.book.id}) }}">{{ r.book.title }}</a>
-                                        </h6>
-                                        {% if r.content|length > 100 %}
-                                            <p class="card-text">{{ r.content|slice(0, 100) ~ '...' }}</p>
-                                            {# TODO poner boton de ver completa en reviews de book show #}
-                                        {% else %}
-                                            {{ r.content }}
-                                        {% endif %}
-                                        <div class="d-flex align-items-center mb-2">
-                                            {% for i in 1..5 %}
-                                                {% if i <= r.rating %}
-                                                    <i class="bi bi-star-fill text-warning"></i>
-                                                {% else %}
-                                                    <i class="bi bi-star text-secondary"></i>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
-        </div>
-    {% else %}
-        <p>No reviews yet.</p>
-    {% endif %}
-    <hr>
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Books</h2>
-        <a href="{{ path('book_index') }}" class="btn btn-sm btn-outline-primary">See all</a>
-    </div>
-    <h2>Recent Books</h2>
-    {% if books %}
-        <div id="booksCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                {% set chunkedBooks = books|batch(5) %}
-                {% for bookGroup in chunkedBooks %}
-                    <div class="carousel-item {% if loop.first %}active{% endif %}">
-                        <div class="d-flex justify-content-center">
-                            {% for book in bookGroup %}
-                                <div class="card mx-2">
-                                    <a href="{{ path('book_show', {'id': book.id}) }}">
-                                        <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="book-cover card-img-top" >
-                                    </a>
-                                    <div class="card-body p-2 text-center">
-                                        <h6 class="card-title book-card-title">{{ book.title }}</h6>
-                                        {% if app.user and not userBooksStatus[book.id] %}
-                                            {% include 'userbook/add_to_library_button.html.twig' with {'book': book} %}
-                                        {% else %}
-                                            <form method="post"
-                                                  action="{{ path('book_remove', {id: book.id}) }}"
-                                                  style="display:inline;"
-                                                  data-confirm="Are you sure you want to remove this book from your library?"
-                                                  data-confirm-title="Remove from Library"
-                                                  data-confirm-action="remove">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
-                                                <button class="btn btn-warning">Remove from Library</button>
-                                            </form>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <button class="carousel-control-prev" type="button" data-bs-target="#booksCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#booksCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
-        </div>
-        <h2>Top 3 Books</h2>
-        <div class="row g-3">
-            {% for bookData in topBooks %}
-                {% set book = bookData[0] %}
-                <div class="col-4">
-                    <div class="card text-center">
-                        <a href="{{ path('book_show', {'id': book.id}) }}">
-                            <img src="{{ book.coverImage }}" class="book-cover card-img-top">
-                        </a>
-                        <div class="card-body">
-                            <h6>{{ book.title }}</h6>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>No books yet.</p>
-    {% endif %}
-    <hr>
-    <section class="mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Clubs</h2>
-            <a href="{{ path('club_index') }}" class="btn btn-sm btn-outline-primary">See all</a>
-        </div>
-
+    <div class="container">
         <div class="row">
-            {% for club in popularClubs %}
-                <div class="col-md-4 mb-3">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <a href="{{ path('club_show', {id: club.id}) }}" class="text-decoration-none">
-                                    {{ club.name }}
-                                </a>
-                            </h5>
-                            <p class="card-text text-muted">
-                                {{ club.description|length > 100 ? club.description|slice(0, 100) ~ '...' : club.description }}
-                            </p>
-
-                            {% if app.user and not club.members.contains(app.user) %}
-                                <form method="post" action="{{ path('club_join', {id: club.id}) }}">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('join' ~ club.id) }}">
-                                    <button class="btn btn-sm btn-primary">Join Club</button>
-                                </form>
-                            {% else %}
-                                <span class="badge bg-success">Member</span>
-                            {% endif %}
-                        </div>
+            <h2>Reviews</h2>
+            <h2>Latest Reviews</h2>
+            {% if reviews %}
+                <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for review in reviews|batch(3) %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <div class="d-flex justify-content-center">
+                                    {% for r in review %}
+                                        <div class="card mx-2" style="width: 30%;">
+                                            <div class="card-body">
+                                                <h6 class="card-subtitle mb-2 text-muted">
+                                                    {% if r.user.id != app.user.id %}
+                                                        <a href="{{ path('user_profile', {'id': r.user.id}) }}">{{ r.user.userName }}</a>
+                                                    {% else %}
+                                                        {{ r.user.userName }}
+                                                    {% endif %}
+                                                    on
+                                                    <a href="{{ path('book_show', {'id': r.book.id}) }}">{{ r.book.title }}</a>
+                                                </h6>
+                                                {% if r.content|length > 100 %}
+                                                    <p class="card-text">{{ r.content|slice(0, 100) ~ '...' }}</p>
+                                                    {# TODO poner boton de ver completa en reviews de book show #}
+                                                {% else %}
+                                                    {{ r.content }}
+                                                {% endif %}
+                                                <div class="d-flex align-items-center mb-2">
+                                                    {% for i in 1..5 %}
+                                                        {% if i <= r.rating %}
+                                                            <i class="bi bi-star-fill text-warning"></i>
+                                                        {% else %}
+                                                            <i class="bi bi-star text-secondary"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
                 </div>
             {% else %}
-                <p>No clubs available yet.</p>
-            {% endfor %}
+                <p>No reviews yet.</p>
+            {% endif %}
         </div>
-    </section>
+        <hr>
+        <div class="row">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2>Books</h2>
+                <a href="{{ path('book_index') }}" class="btn btn-sm btn-outline-primary">See all</a>
+            </div>
+            <h2>Recent Books</h2>
+            {% if books %}
+                <div id="booksCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% set chunkedBooks = books|batch(3) %}
+                        {% for bookGroup in chunkedBooks %}
+                            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                <div class="d-flex justify-content-center">
+                                    {% for book in bookGroup %}
+                                        <div class="card mx-2">
+                                            <a href="{{ path('book_show', {'id': book.id}) }}">
+                                                <img src="{{ book.coverImage }}" alt="{{ book.title }}" class="book-cover card-img-top" >
+                                            </a>
+                                            <div class="card-body p-2 text-center">
+                                                <h6 class="card-title book-card-title">{{ book.title }}</h6>
+                                                {% if app.user and not userBooksStatus[book.id] %}
+                                                    {% include 'userbook/add_to_library_button.html.twig' with {'book': book} %}
+                                                {% else %}
+                                                    <form method="post"
+                                                          action="{{ path('book_remove', {id: book.id}) }}"
+                                                          style="display:inline;"
+                                                          data-confirm="Are you sure you want to remove this book from your library?"
+                                                          data-confirm-title="Remove from Library"
+                                                          data-confirm-action="remove">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('remove' ~ book.id) }}">
+                                                        <button class="btn btn-warning">Remove from Library</button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#booksCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#booksCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
+                <h2 class="mt-3">Top 3 Books</h2>
+                <div class="row g-3">
+                    {% for bookData in topBooks %}
+                        {% set book = bookData[0] %}
+                        <div class="col-4">
+                            <div class="card text-center">
+                                <a href="{{ path('book_show', {'id': book.id}) }}">
+                                    <img src="{{ book.coverImage }}" class="book-cover card-img-top">
+                                </a>
+                                <div class="card-body">
+                                    <h6>{{ book.title }}</h6>
+
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No books yet.</p>
+            {% endif %}
+        </div>
+        <hr>
+        <div class="row">
+            <section class="mt-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2>Clubs</h2>
+                    <a href="{{ path('club_index') }}" class="btn btn-sm btn-outline-primary">See all</a>
+                </div>
+
+                <div class="row">
+                    {% for club in popularClubs %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ path('club_show', {id: club.id}) }}" class="text-decoration-none">
+                                            {{ club.name }}
+                                        </a>
+                                    </h5>
+                                    <p class="card-text text-muted">
+                                        {{ club.description|length > 100 ? club.description|slice(0, 100) ~ '...' : club.description }}
+                                    </p>
+
+                                    {% if app.user and not club.members.contains(app.user) %}
+                                        <form method="post" action="{{ path('club_join', {id: club.id}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('join' ~ club.id) }}">
+                                            <button class="btn btn-sm btn-primary">Join Club</button>
+                                        </form>
+                                    {% else %}
+                                        <span class="badge bg-success">Member</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p>No clubs available yet.</p>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </div>
+
 {% endblock %}
