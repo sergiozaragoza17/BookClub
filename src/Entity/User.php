@@ -58,11 +58,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?array $favGenres = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $favBook = null;
+    #[ORM\ManyToOne(targetEntity: Book::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Book $favBook = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $currentlyReading = null;
+    #[ORM\ManyToOne(targetEntity: Book::class)]
+    private ?Book $currentlyReading = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $joinedAt = null;
@@ -261,24 +262,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getFavBook(): ?string
+    public function getFavBook(): ?Book
     {
         return $this->favBook;
     }
 
-    public function setFavBook(?string $favBook): static
+    public function setFavBook(?Book $favBook): static
     {
         $this->favBook = $favBook;
-
         return $this;
     }
 
-    public function getCurrentlyReading(): ?string
+    public function getCurrentlyReading(): ?Book
     {
         return $this->currentlyReading;
     }
 
-    public function setCurrentlyReading(?string $currentlyReading): static
+    public function setCurrentlyReading(?Book $currentlyReading): static
     {
         $this->currentlyReading = $currentlyReading;
 
