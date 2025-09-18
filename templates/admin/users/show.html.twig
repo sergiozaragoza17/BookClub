@@ -1,19 +1,56 @@
-{% extends '../../base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}User {{ user.name }}{% endblock %}
+{% block title %}User: {{ user.name }}{% endblock %}
 
 {% block body %}
-    <h1>User Details</h1>
+    <h1 class="mt-3 text-center">{{ user.userName }}'s Details</h1>
+    <div class="container mt-3 p-4">
+        <div class="card shadow-sm p-4">
+            <div class="text-center mb-4">
+                <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="rounded-circle img-thumbnail"  style="width: 150px; height: 150px; object-fit: cover;">
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Bio:</div>
+                <div class="col-sm-8 ">{{ user.bio ?? 'Not set' }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Fav. Book:</div>
+                <div class="col-sm-8 ">{{ user.favBook ?? 'Not set' }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Currently Reading:</div>
+                <div class="col-sm-8 ">{{ user.currentlyReading ?? 'Not set' }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Fav. Genres:</div>
+                <div class="col-sm-8 ">{{ user.favGenres|join(', ') }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Joined at:</div>
+                <div class="col-sm-8 ">{{ user.joinedAt|date }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-4 fw-bold ">Total Reviews Written:</div>
+                <div class="col-sm-8 ">{{ totalReviews }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="container mb-3 d-flex justify-content-between align-items-center mt-3">
+        <div>
+            <a href="{{ path('admin_users') }}" class="btn btn-secondary">Back to list</a>
+            <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-primary">Edit</a>
+        </div>
 
-    <ul>
-        <li><strong>ID:</strong> {{ user.id }}</li>
-        <li><strong>Email:</strong> {{ user.email }}</li>
-        <li><strong>Name:</strong> {{ user.name }}</li>
-        <li><strong>Roles:</strong> {{ user.roles|join(', ') }}</li>
-        <li><strong>Joined At:</strong> {{ user.joinedAt ? user.joinedAt|date('Y-m-d') : '' }}</li>
-        <li><strong>Verified:</strong> {{ user.isVerified ? 'Yes' : 'No' }}</li>
-    </ul>
+        <a class="btn btn-primary" href="{{ path('admin_user_library', {'id': user.id}) }}" class="btn btn-link mt-2">View {{ user.username }}'s library</a>
+    </div>
+{#    <ul>#}
+{#        <li><strong>ID:</strong> {{ user.id }}</li>#}
+{#        <li><strong>Email:</strong> {{ user.email }}</li>#}
+{#        <li><strong>Name:</strong> {{ user.name }}</li>#}
+{#        <li><strong>Roles:</strong> {{ user.roles|join(', ') }}</li>#}
+{#        <li><strong>Joined At:</strong> {{ user.joinedAt ? user.joinedAt|date('Y-m-d') : '' }}</li>#}
+{#    </ul>#}
 
-    <a href="{{ path('admin_user_edit', {id: user.id}) }}">Edit</a>
-    <a href="{{ path('admin_user_index') }}">Back to list</a>
+{#    <a href="{{ path('admin_user_edit', {id: user.id}) }}">Edit</a>#}
+{#    <a href="{{ path('admin_users') }}">Back to list</a>#}
 {% endblock %}

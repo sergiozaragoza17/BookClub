@@ -3,9 +3,10 @@
 {% block title %}Manage Users{% endblock %}
 
 {% block body %}
-    <h1>Manage Users</h1>
+    <div class="container mt-4">
+        <h1 class="mb-3 text-center">Manage Users</h1>
 
-    <table>
+    <table class="table table-bordered">
         <thead>
         <tr>
             <th>ID</th>
@@ -25,7 +26,11 @@
                 <td>{{ user.roles|join(', ') }}</td>
                 <td>{{ user.joinedAt ? user.joinedAt|date('Y-m-d') : '' }}</td>
                 <td>
-                    <a href="{{ path('admin_user_edit', {id: user.id}) }}">Edit</a>
+                    {% if app.user != user %}
+                        <a href="{{ path('admin_user_show', {id: user.id}) }}" class="btn btn-info ">Show</a>
+                    {% endif %}
+
+                    <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-warning ">Edit</a>
                     <form method="post"
                           action="{{ path('admin_user_delete', {id: user.id}) }}"
                           style="display:inline;"
@@ -44,4 +49,5 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 {% endblock %}
