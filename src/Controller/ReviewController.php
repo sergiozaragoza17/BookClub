@@ -99,16 +99,6 @@ class ReviewController extends AbstractController
         return $this->redirectToRoute('book_show', ['id' => $book->getId()]);
     }
 
-    #[Route('/{id}', name: 'review_show', methods: ['GET'])]
-    public function show(Review $review): Response
-    {
-        $book = $review->getBook();
-        return $this->render('review/show.html.twig', [
-            'review' => $review,
-            'book' => $book,
-        ]);
-    }
-
     #[Route('/{id}/edit', name: 'review_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Review $review, EntityManagerInterface $entityManager): Response
     {

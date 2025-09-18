@@ -1,0 +1,37 @@
+<div class="modal fade" id="reviewModal{{ review.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Review by {{ review.user.userName }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row text-center mb-2">
+                    <div class="col-md-4"><strong>User:</strong> {{ review.user.userName }}</div>
+                    <div class="col-md-4">
+                        {% if review.status in ['pending', 'rejected'] and (user.id == review.user.id or is_granted('ROLE_ADMIN')) %}
+                            <strong>Status:</strong> {{ review.status|capitalize }}
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4"><strong>Edited:</strong> {{ review.edited ? 'Yes' : 'No' }}</div>
+                    {% if club %}
+                    <div class="col-md-4"><strong>Club:</strong> {{ club.name }}</div>
+                    {% endif %}
+                </div>
+                <p>{{ review.content }}</p>
+                <div class="d-flex align-items-center mb-2">
+                    {% for i in 1..5 %}
+                        {% if i <= review.rating %}
+                            <i class="bi bi-star-fill text-warning"></i>
+                        {% else %}
+                            <i class="bi bi-star text-secondary"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -46,11 +46,15 @@
                                             {% if review.edited %}(Edited){% endif %}
                                             {% if review.club %}club: {{ review.club.name }}{% endif %}
                                         </h6>
-                                        {% if review.content|length > 100 %}
-                                            <p class="card-text">{{ review.content|slice(0, 100) ~ '...' }}</p>
-                                            {# TODO poner boton de ver completa en reviews de book show #}
+                                        {% if review.content|length > 50 %}
+                                            <p class="card-text" style="cursor: pointer;"
+                                               data-bs-toggle="modal" data-bs-target="#reviewModal{{ review.id }}"
+                                               title="Click to read full review">
+                                                {{ review.content|slice(0, 50) ~ '...' }}
+                                            </p>
+                                            {% include 'review/_review_modal.html.twig' with {'review': review, 'club':review.club} %}
                                         {% else %}
-                                            {{ review.content }}
+                                            <p class="card-text">{{ review.content }}</p>
                                         {% endif %}
                                         <div class="d-flex align-items-center mb-2">
                                             {% for i in 1..5 %}
