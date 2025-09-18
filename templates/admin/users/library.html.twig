@@ -76,6 +76,6 @@
         </div>
     </div>
     <div class="container mb-3 d-flex justify-content-between align-items-center mt-3">
-        <button class="btn btn-secondary" onclick="window.history.back();">Back</button>
+        <a href="{{ path('admin_user_show', {id: user.id}) }}" class="btn btn-secondary ">Back</a>
     </div>
 {% endblock %}

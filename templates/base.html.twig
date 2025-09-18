@@ -29,35 +29,35 @@
                 {% if app.user %}
                     {% if not is_granted('ROLE_ADMIN') %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('my_books') }}">My Books</a>
+                        <a class="nav-link {{ app.request.attributes.get('_route') == 'my_books' ? 'active' : '' }}" href="{{ path('my_books') }}">My Books</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('my_clubs') }}">My Clubs</a>
+                        <a class="nav-link {{ app.request.attributes.get('_route') == 'my_clubs' ? 'active' : '' }}" href="{{ path('my_clubs') }}">My Clubs</a>
                     </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('book_index') }}">Books</a>
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'book_index' ? 'active' : '' }}" href="{{ path('book_index') }}">Books</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('club_index') }}">Clubs</a>
+                            <a class="nav-link {{ app.request.attributes.get('_route') == 'club_index' ? 'active' : '' }}" href="{{ path('club_index') }}">Clubs</a>
                         </li>
-                        <li><a class="nav-link" href="{{ path('admin_genre_new') }}">Genres</a></li>
-                        <li><a class="nav-link" href="{{ path('admin_users') }}">Users</a></li>
-                        <li><a class="nav-link" href="{{ path('admin_reviews', {'status': 'all'}) }}">Reviews</a></li>
+                        <li><a class="nav-link {{ app.request.attributes.get('_route') == 'admin_genre_index' ? 'active' : '' }}" href="{{ path('admin_genre_index') }}">Genres</a></li>
+                        <li><a class="nav-link {{ app.request.attributes.get('_route') == 'admin_users' ? 'active' : '' }}" href="{{ path('admin_users') }}">Users</a></li>
+                        <li><a class="nav-link {{ app.request.attributes.get('_route') == 'admin_reviews' ? 'active' : '' }}" href="{{ path('admin_reviews', {'status': 'all'}) }}">Reviews</a></li>
                     {% endif %}
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('profile') }}">Profile</a>
+                        <a class="nav-link {{ app.request.attributes.get('_route') == 'profile' ? 'active' : '' }}" href="{{ path('profile') }}">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('logout') }}">Logout</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('login') }}">Login</a>
+                        <a class="nav-link {{ app.request.attributes.get('_route') == 'login' ? 'active' : '' }}" href="{{ path('login') }}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('register') }}">Register</a>
+                        <a class="nav-link {{ app.request.attributes.get('_route') == 'register' ? 'active' : '' }}" href="{{ path('register') }}">Register</a>
                     </li>
                 {% endif %}
             </ul>

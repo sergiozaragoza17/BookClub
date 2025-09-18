@@ -26,6 +26,7 @@
                 <div class="col-sm-4 fw-bold">Bio:</div>
                 <div class="col-sm-8">{{ user.bio ?: 'Not set' }}</div>
             </div>
+            {% if 'ROLE_ADMIN' not in user.roles %}
             <div class="row mb-2">
                 <div class="col-sm-4 fw-bold">Favorite Book:</div>
                 <div class="col-sm-8">{{ user.favBook ? user.favBook.title : 'Not set' }}</div>
@@ -46,7 +47,7 @@
                 <div class="col-sm-4 fw-bold">Total Reviews Written:</div>
                 <div class="col-sm-8">{{ totalReviews }}</div>
             </div>
-
+{% endif %}
         </div>
     </div>
     <div class="container mb-3 d-flex justify-content-between align-items-center mt-3">

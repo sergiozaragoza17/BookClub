@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\ReviewRepository;
+use App\Repository\UserBookRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,6 +23,28 @@ class AdminUserController extends AbstractController
     {
         return $this->render('admin/users/index.html.twig', [
             'users' => $userRepo->findAll(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'admin_user_show', methods: ['GET'])]
+    public function show(User $user, UserBookRepository $userBookRepository, ReviewRepository $reviewRepository): Response
+    {
+        $totalReviews = $reviewRepository->getTotalReviewsApprovedByUser($user);
+        $books = $userBookRepository->findBy(['user' => $user], ['id' => 'DESC'], 10);
+        return $this->render('admin/users/show.html.twig', [
+            'user' => $user,
+            'books' => $books,
+            'totalReviews' => $totalReviews,
+        ]);
+    }
+
+    #[Route('/{id}/library', name: 'admin_user_library', methods: ['GET'])]
+    public function library(User $user, UserBookRepository $userBookRepository): Response
+    {
+        $books = $userBookRepository->findBy(['user' => $user]);
+        return $this->render('admin/users/library.html.twig', [
+            'user' => $user,
+            'books' => $books,
         ]);
     }
 
