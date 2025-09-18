@@ -9,6 +9,7 @@ use App\Form\UserType;
 use App\Repository\ReviewRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,26 +21,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminReviewController extends AbstractController
 {
     #[Route('', name: 'admin_reviews')]
-    public function index(ReviewRepository $reviewRepository, Request $request): Response
+    public function index(ReviewRepository $reviewRepository, Request $request, PaginatorInterface $paginator): Response
     {
-        $status = $request->query->get('status');
-
-        if ($status === 'all') {
-            $reviews = $reviewRepository->findAll();
-        } else {
-            $reviews = $reviewRepository->findBy(['status' => $status]);
+        $status = $request->query->get('status', 'all');
+        $queryBuilder = $reviewRepository->createQueryBuilder('r');
+        if ($status !== 'all') {
+            $queryBuilder->andWhere('r.status = :status')
+                ->setParameter('status', $status);
         }
-        return $this->render('admin/reviews/index.html.twig', [
-            'reviews' => $reviews,
-            'currentStatus' => $status,
-        ]);
-    }
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            10
+        );
 
-    #[Route('/{id}', name: 'admin_review_show', methods: ['GET'])]
-    public function show(Review $review): Response
-    {
-        return $this->render('admin/reviews/show.html.twig', [
-            'review' => $review,
+        return $this->render('admin/reviews/index.html.twig', [
+            'reviews' => $pagination,
+            'currentStatus' => $status,
         ]);
     }
 
