@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\VarDumper\VarDumper;
 
 #[Route('/book')]
 class BookController extends AbstractController
@@ -333,7 +332,6 @@ class BookController extends AbstractController
 
             $entityManager->persist($userBook);
             $entityManager->flush();
-            VarDumper::dump($userBook);
         }
         $message = $existing ? $book->getTitle().' is already in your library.' : $book->getTitle().' added to your library!';
 
