@@ -35,7 +35,7 @@ class ClubController extends AbstractController
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            12 // clubs por página
+            12
         );
 
         return $this->render('club/index.html.twig', [

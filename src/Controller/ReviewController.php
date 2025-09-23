@@ -21,14 +21,6 @@ use Symfony\Component\VarDumper\VarDumper;
 #[Route('/review')]
 class ReviewController extends AbstractController
 {
-    #[Route('/', name: 'review_index', methods: ['GET'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function index(ReviewRepository $reviewRepository): Response
-    {
-        return $this->render('review/index.html.twig', [
-            'reviews' => $reviewRepository->findBy(['status' => 'approved']),
-        ]);
-    }
 
     #[Route('/{book}/new', name: 'review_new', methods: ['GET', 'POST'])]
     public function new(Request $request, Book $book, EntityManagerInterface $entityManager): Response
