@@ -93,10 +93,8 @@
             const preview = document.getElementById('profileImagePreview');
 
             if(input && preview) {
-                // Click en la imagen abre el selector
                 preview.addEventListener('click', () => input.click());
 
-                // Actualiza preview cuando se selecciona un archivo
                 input.addEventListener('change', function() {
                     if (input.files && input.files[0]) {
                         const reader = new FileReader();

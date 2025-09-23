@@ -38,7 +38,6 @@
                     <td>{{ review.status }}</td>
                     <td>{{ review.edited ? 'Edited' : 'Not Edited' }}</td>
                     <td class="text-nowrap">
-{#                        <a class="btn btn-info btn-sm mb-1" href="{{ path('admin_review_show', {id: review.id}) }}">View</a>#}
                         <button class="btn btn-info btn-sm mb-1"
                            data-bs-toggle="modal"
                            data-bs-target="#reviewModal{{ review.id }}">

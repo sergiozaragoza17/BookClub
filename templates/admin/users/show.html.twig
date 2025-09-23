@@ -43,14 +43,4 @@
 
         <a class="btn btn-primary" href="{{ path('admin_user_library', {'id': user.id}) }}" class="btn btn-link mt-2">View {{ user.username }}'s library</a>
     </div>
-{#    <ul>#}
-{#        <li><strong>ID:</strong> {{ user.id }}</li>#}
-{#        <li><strong>Email:</strong> {{ user.email }}</li>#}
-{#        <li><strong>Name:</strong> {{ user.name }}</li>#}
-{#        <li><strong>Roles:</strong> {{ user.roles|join(', ') }}</li>#}
-{#        <li><strong>Joined At:</strong> {{ user.joinedAt ? user.joinedAt|date('Y-m-d') : '' }}</li>#}
-{#    </ul>#}
-
-{#    <a href="{{ path('admin_user_edit', {id: user.id}) }}">Edit</a>#}
-{#    <a href="{{ path('admin_users') }}">Back to list</a>#}
 {% endblock %}

@@ -30,7 +30,6 @@
                                                 </h6>
                                                 {% if r.content|length > 100 %}
                                                     <p class="card-text">{{ r.content|slice(0, 100) ~ '...' }}</p>
-                                                    {# TODO poner boton de ver completa en reviews de book show #}
                                                 {% else %}
                                                     {{ r.content }}
                                                 {% endif %}
