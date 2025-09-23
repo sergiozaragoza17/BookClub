@@ -24,7 +24,7 @@ class ReviewFixtures extends Fixture implements FixtureGroupInterface
         });
 
         if (empty($users)) {
-            echo "⚠️ No hay usuarios con ROLE_USER, no se crearán reviews.\n";
+            echo "No users with ROLE_USER found, no club reviews will be created.\n";
             return;
         }
 
