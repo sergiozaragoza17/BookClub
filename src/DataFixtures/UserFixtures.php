@@ -26,6 +26,8 @@ class UserFixtures extends Fixture
         $admin->setEmail('admin@example.com');
         $admin->setRoles(['ROLE_ADMIN']);
         $admin->setUsername('admin');
+        $admin->setName('admin');
+        $admin->setJoinedAt(new \DateTimeImmutable('-' . $faker->numberBetween(1, 60) . ' days'));
         $admin->setPassword($this->passwordHasher->hashPassword($admin, 'adminpass'));
         $manager->persist($admin);
 
@@ -34,7 +36,9 @@ class UserFixtures extends Fixture
             $user = new User();
             $user->setEmail($faker->unique()->safeEmail());
             $user->setUsername($faker->unique()->userName());
+            $user->setName($faker->unique()->name());
             $user->setRoles(['ROLE_USER']);
+            $user->setJoinedAt(new \DateTimeImmutable('-' . $faker->numberBetween(1, 60) . ' days'));
             $user->setPassword($this->passwordHasher->hashPassword($user, 'userpass'));
             $manager->persist($user);
         }

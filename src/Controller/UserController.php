@@ -27,10 +27,12 @@ class UserController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $totalReviews = $reviewRepository->getTotalReviewsApprovedByUser($user);
+        $defaultImage = 'https://bookclub-portfolio.s3.eu-north-1.amazonaws.com/profiles/defaultProfileImage/default_profile_image.jpg';
 
         return $this->render('user/view.html.twig', [
             'user' => $user,
             'totalReviews' => $totalReviews,
+            'defaultImage' => $defaultImage,
         ]);
     }
 
@@ -39,10 +41,13 @@ class UserController extends AbstractController
     {
         $totalReviews = $reviewRepository->getTotalReviewsApprovedByUser($user);
         $books = $userBookRepository->findBy(['user' => $user], ['id' => 'DESC'], 10);
+        $defaultImage = 'https://bookclub-portfolio.s3.eu-north-1.amazonaws.com/profiles/defaultProfileImage/default_profile_image.jpg';
+
         return $this->render('user/view_other.html.twig', [
             'user' => $user,
             'books' => $books,
             'totalReviews' => $totalReviews,
+            'defaultImage' => $defaultImage
         ]);
     }
 

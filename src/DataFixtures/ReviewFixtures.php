@@ -6,12 +6,13 @@ use App\Entity\Book;
 use App\Entity\Review;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Faker\Factory;
 
-class ReviewFixtures extends Fixture implements FixtureGroupInterface
+class ReviewFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -48,8 +49,11 @@ class ReviewFixtures extends Fixture implements FixtureGroupInterface
         $manager->flush();
     }
 
-    public static function getGroups(): array
+    public function getDependencies(): array
     {
-        return ['review'];
+        return [
+            UserFixtures::class,
+            BookFixtures::class
+        ];
     }
 }

@@ -7,7 +7,11 @@
     <div class="container mt-3 p-4">
         <div class="card shadow-sm p-4">
             <div class="text-center mb-4">
-                <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="rounded-circle img-thumbnail"  style="width: 150px; height: 150px; object-fit: cover;">
+                {% if user.profileImage %}
+                    <img src="{{ user.profileImage }}" alt="{{ user.name }}" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <img src="{{ defaultImage }}" alt="{{ user.name }}" class="rounded-circle img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                {% endif %}
             </div>
             <div class="row mb-2">
                 <div class="col-sm-4 fw-bold ">Bio:</div>

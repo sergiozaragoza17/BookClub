@@ -6,10 +6,11 @@ use App\Entity\Club;
 use App\Entity\Genre;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class ClubFixtures extends Fixture
+class ClubFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -24,7 +25,15 @@ class ClubFixtures extends Fixture
                 $club->setDescription($faker->paragraph(2));
                 $club->setGenre($genre);
 
+                $creator = $faker->randomElement($users);
+                $club->setCreatedBy($creator);
+
                 $members = $faker->randomElements($users, $faker->numberBetween(2, 5));
+
+                if (!in_array($creator, $members, true)) {
+                    $members[] = $creator;
+                }
+
                 foreach ($members as $member) {
                     $club->addMember($member);
                 }
@@ -34,5 +43,12 @@ class ClubFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            GenreFixtures::class,
+        ];
     }
 }

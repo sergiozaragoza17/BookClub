@@ -3,16 +3,19 @@
 namespace App\DataFixtures;
 
 use App\Entity\Book;
+use App\Entity\Genre;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class BookFixtures extends Fixture implements FixtureGroupInterface
+class BookFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
+
 
         for ($i = 0; $i < 30; $i++) {
             $book = new Book();
@@ -23,14 +26,22 @@ class BookFixtures extends Fixture implements FixtureGroupInterface
             $book->setCoverImage("https://picsum.photos/200/300?random=" . $i); // placeholder image
             $book->setCreated($faker->dateTimeBetween('-2 years', 'now'));
 
+            $randomGenreName = $faker->randomElement(['Fantasy','Science Fiction','Mystery','Romance','History','Horror','Biography']);
+            /** @var Genre $genre */
+            $genre = $this->getReference('genre_' . $randomGenreName);
+            $book->setGenre($genre);
+
             $manager->persist($book);
         }
 
         $manager->flush();
     }
 
-    public static function getGroups(): array
+    public function getDependencies(): array
     {
-        return ['book'];
+        return [
+            UserFixtures::class,
+            GenreFixtures::class
+        ];
     }
 }

@@ -7,10 +7,11 @@ use App\Entity\ClubBook;
 use App\Entity\Review;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class ClubReviewFixtures extends Fixture
+class ClubReviewFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -43,7 +44,6 @@ class ClubReviewFixtures extends Fixture
                     $review->setStatus('approved');
                     $review->setCreated(new \DateTimeImmutable('-' . $faker->numberBetween(1, 365) . ' days'));
 
-                    // Asociación a club (solo para club reviews)
                     $review->setClub($club);
 
                     $manager->persist($review);
@@ -52,5 +52,14 @@ class ClubReviewFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            UserFixtures::class,
+            ClubFixtures::class,
+            BookFixtures::class
+        ];
     }
 }
