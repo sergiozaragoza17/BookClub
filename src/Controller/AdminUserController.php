@@ -7,9 +7,11 @@ use App\Form\UserType;
 use App\Repository\ReviewRepository;
 use App\Repository\UserBookRepository;
 use App\Repository\UserRepository;
+use App\Service\S3Uploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -52,12 +54,20 @@ class AdminUserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'admin_user_edit')]
-    public function edit(User $user, Request $request, EntityManagerInterface $em): Response
+    public function edit(User $user, Request $request, EntityManagerInterface $em, S3Uploader $uploader): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var UploadedFile $file */
+            $file = $form->get('profileImage')->getData();
+            if ($file) {
+                $url = $uploader->upload($file, 'profiles/');
+                $user->setProfileImage($url);
+            }
+
             $em->flush();
             $this->addFlash('success', 'User updated successfully.');
             return $this->redirectToRoute('admin_users');
